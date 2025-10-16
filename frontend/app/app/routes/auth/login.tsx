@@ -34,7 +34,7 @@ const Login = () => {
   };
   return (
     <div className="h-screen w-full flex items-center justify-center ">
-      <Card className=" w-1/6 shadow-md">
+      <Card className=" w-1/5 shadow-md">
         <CardHeader>
           <CardTitle className=" text-center text-lg">Welcome Back</CardTitle>
           <CardDescription className="text-center">Login with your credentials</CardDescription>
@@ -57,7 +57,12 @@ const Login = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
+                   <div className=" flex items-center justify-between">
                     <FormLabel>Password</FormLabel>
+                    <FormLabel className=" text-blue-400">
+                      <Link to={'/forgot-password'}>Forgot password?</Link>
+                      </FormLabel>
+                    </div>
                     <FormControl>
                       <Input
                         type="password"
@@ -70,7 +75,7 @@ const Login = () => {
               />
               <Button type="submit" className="text-center">Login</Button>
             </form>
-            <CardFooter>
+            <CardFooter className=" mx-auto mt-2">
               <div>
                 <p>Don't have an account? <span className=" text-blue-500">
                  <Link to={'/signup'}>Signup</Link> </span></p>
