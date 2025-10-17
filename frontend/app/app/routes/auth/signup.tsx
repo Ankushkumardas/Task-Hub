@@ -18,33 +18,58 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Link } from "react-router";
-//
-type SignupSchema = z.infer<typeof signupschema>;
+import { Link, useNavigate } from "react-router";
+import { useSignupMutation } from "~/hooks/useauth";
+import { toast } from "sonner";
+
+export type SignupSchema = z.infer<typeof signupschema>;
 
 const Signup = () => {
-
   const form = useForm({
     resolver: zodResolver(signupschema),
     defaultValues: {
       email: "",
       password: "",
-      name:"",
-      confirmpassword:""
+      name: "",
+      confirmpassword: "",
     },
   });
-
+  const navigate = useNavigate();
+  const { mutate, isPending } = useSignupMutation();
   const handlesubmit = (data: SignupSchema) => {
-    console.log(data);
+    mutate(data, {
+      onSuccess: (response) => {
+        console.log("responce",response)
+        toast.success("Account registration is Done");
+  setTimeout(() => navigate("/verify-email"), 500);
+        if (response?.verificationToken) {
+          toast.info(
+            `Verification token sent to email: ${response?.data?.email}`
+          );
+        }
+      },
+      onError: (error) => {
+        toast.error("Registration Failed");
+        console.log(error);
+      },
+    });
   };
   return (
     <div className="h-screen w-full flex items-center justify-center ">
       <Card className=" w-1/5 shadow-md">
         <CardHeader>
-          <CardTitle className=" text-center text-lg">Welcome to TashHub</CardTitle>
-          <CardDescription className="text-center">Signup with your credentials</CardDescription>
+          <CardTitle className=" text-center text-lg">
+            Welcome to TashHub
+          </CardTitle>
+
+          <CardDescription className="text-center">
+            Signup with your credentials
+          </CardDescription>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handlesubmit)} className="flex flex-col gap-2">
+            <form
+              onSubmit={form.handleSubmit(handlesubmit)}
+              className="flex flex-col gap-2"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -69,7 +94,7 @@ const Signup = () => {
                   </FormItem>
                 )}
               />
-              <FormField 
+              <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
@@ -85,7 +110,7 @@ const Signup = () => {
                   </FormItem>
                 )}
               />
-              <FormField 
+              <FormField
                 control={form.control}
                 name="confirmpassword"
                 render={({ field }) => (
@@ -101,12 +126,18 @@ const Signup = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="text-center">Signup</Button>
+              <Button type="submit" className="text-center">
+                Signup
+              </Button>
             </form>
             <CardFooter className="mx-auto mt-2">
               <div className=" ">
-                <p className=" text-center">Already have an account? <span className=" text-blue-500">
-                 <Link to={'/login'}>Login</Link> </span></p>
+                <p className=" text-center">
+                  Already have an account?{" "}
+                  <span className=" text-blue-500">
+                    <Link to={"/login"}>Login</Link>{" "}
+                  </span>
+                </p>
               </div>
             </CardFooter>
           </Form>

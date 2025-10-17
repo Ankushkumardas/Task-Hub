@@ -23,8 +23,9 @@ const userschema = new mongoose.Schema(
       type: String,
     },
     isemailverified: {
-      type: String,
+      type: Boolean,
       required: true,
+      default:false,
       trim: true,
     },
     lastlogin: {

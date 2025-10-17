@@ -19,6 +19,9 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
+import { useLoginMutation } from "~/hooks/useauth";
+import { useAuth } from "~/components/provider/authcontext";
+import { toast } from "sonner";
 type LoginSchema = z.infer<typeof loginschema>;
 const Login = () => {
   const form = useForm({
@@ -29,17 +32,38 @@ const Login = () => {
     },
   });
 
+  interface LoginSchema {
+    email: string;
+    password: string;
+  }
+
+  const { mutate, isPending } = useLoginMutation();
+  const { setisAuthenticated } = useAuth();
   const handlesubmit = (data: LoginSchema) => {
-    console.log(data);
+    mutate(data, {
+      onSuccess: () => {
+        toast.success("Account registration is Done");
+        setisAuthenticated(true);
+      },
+      onError: (error) => {
+        toast.error("Registration Failed");
+        console.log(error);
+      },
+    });
   };
   return (
     <div className="h-screen w-full flex items-center justify-center ">
       <Card className=" w-1/5 shadow-md">
         <CardHeader>
           <CardTitle className=" text-center text-lg">Welcome Back</CardTitle>
-          <CardDescription className="text-center">Login with your credentials</CardDescription>
+          <CardDescription className="text-center">
+            Login with your credentials
+          </CardDescription>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handlesubmit)} className="flex flex-col gap-2">
+            <form
+              onSubmit={form.handleSubmit(handlesubmit)}
+              className="flex flex-col gap-2"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -52,15 +76,15 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <FormField 
+              <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                   <div className=" flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
-                    <FormLabel className=" text-blue-400">
-                      <Link to={'/forgot-password'}>Forgot password?</Link>
+                    <div className=" flex items-center justify-between">
+                      <FormLabel>Password</FormLabel>
+                      <FormLabel className=" text-blue-400">
+                        <Link to={"/forgot-password"}>Forgot password?</Link>
                       </FormLabel>
                     </div>
                     <FormControl>
@@ -73,12 +97,18 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="text-center">Login</Button>
+              <Button type="submit" className="text-center">
+                Login
+              </Button>
             </form>
             <CardFooter className=" mx-auto mt-2">
               <div>
-                <p>Don't have an account? <span className=" text-blue-500">
-                 <Link to={'/signup'}>Signup</Link> </span></p>
+                <p>
+                  Don't have an account?{" "}
+                  <span className=" text-blue-500">
+                    <Link to={"/signup"}>Signup</Link>{" "}
+                  </span>
+                </p>
               </div>
             </CardFooter>
           </Form>
