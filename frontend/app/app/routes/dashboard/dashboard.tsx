@@ -1,12 +1,11 @@
 import React from 'react'
 
-const Dashboard = () => {
-  console.log("dasshjcbksaj")
+const DashboardLayout = () => {
   return (
     <div>
-      dashboard
+      dashboard layout
     </div>
   )
 }
 
-export default Dashboard
+export default DashboardLayout

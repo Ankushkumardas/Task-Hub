@@ -36,12 +36,11 @@ const Signup = () => {
   });
   const navigate = useNavigate();
   const { mutate, isPending } = useSignupMutation();
+
   const handlesubmit = (data: SignupSchema) => {
     mutate(data, {
       onSuccess: (response) => {
-        console.log("responce",response)
-        toast.success("Account registration is Done");
-  setTimeout(() => navigate("/verify-email"), 500);
+        setTimeout(() => navigate("/verify-email"), 500);
         if (response?.verificationToken) {
           toast.info(
             `Verification token sent to email: ${response?.data?.email}`

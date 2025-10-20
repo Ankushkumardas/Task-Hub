@@ -1,11 +1,14 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "~/types";
+import { queryClient } from "./recatqueryProvider";
+import { useLocation, useNavigate } from "react-router";
+import { publicRoutes } from "~/lib";
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login?: (email: string, password: string) => Promise<void>;
+  login?: any;
   logout?: () => Promise<void>;
   setUser?: React.Dispatch<React.SetStateAction<User | null>>;
   setIsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,16 +22,68 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setisAuthenticated] = useState(false);
 
-  const login = async (email: string, password: string) => {
-    console.log("login data ", { email, password });
+  //condition to make even if we refresh or reload teh page the user data should persist in all pages and conditon -->
+  const navigate = useNavigate();
+  const currentpath = useLocation().pathname;
+  const ispublicRoute = publicRoutes.includes(currentpath);
+
+  //check if user is authentcated or logged in
+  useEffect(() => {
+    const checkAuth=async()=>{
+    const userinfo = localStorage.getItem("token");
+    if (userinfo && userinfo !== "undefined") {
+      try {
+        // Decode JWT payload
+        const base64Payload = userinfo.split('.')[1];
+        const payload = JSON.parse(atob(base64Payload));
+        setUser(payload);
+        setisAuthenticated(true);
+      } catch (e) {
+        setUser(null);
+        setisAuthenticated(false);
+      }
+    } else {
+      setisAuthenticated(false);
+      if(!ispublicRoute){
+        navigate('/login')
+      }
+    }
+    setIsLoading(false)
+  }
+  checkAuth()
+  }, []);
+
+  //
+  const login = async (data: any) => {
+    console.log(data);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data?.user));
+    setUser(data?.user);
+    setisAuthenticated(true);
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     console.log("logout ");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setisAuthenticated(false);
+    //clear all caache
+    queryClient.clear();
   };
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, isLoading, login, logout,setisAuthenticated,setIsLoading,setUser }}
+      value={{
+        user,
+        isAuthenticated,
+        isLoading,
+        login,
+        logout,
+        setisAuthenticated,
+        setIsLoading,
+        setUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -18,12 +18,13 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useLoginMutation } from "~/hooks/useauth";
 import { useAuth } from "~/components/provider/authcontext";
 import { toast } from "sonner";
 type LoginSchema = z.infer<typeof loginschema>;
 const Login = () => {
+  const navigate=useNavigate();
   const form = useForm({
     resolver: zodResolver(loginschema),
     defaultValues: {
@@ -38,15 +39,17 @@ const Login = () => {
   }
 
   const { mutate, isPending } = useLoginMutation();
-  const { setisAuthenticated } = useAuth();
+  const {login,setisAuthenticated } = useAuth();
   const handlesubmit = (data: LoginSchema) => {
     mutate(data, {
-      onSuccess: () => {
-        toast.success("Account registration is Done");
-        setisAuthenticated(true);
+      onSuccess: (data) => {
+        toast.success("Account Login Successfull",data);
+        setisAuthenticated(true)
+        login(data)        
+        navigate('/dashboard');
       },
       onError: (error) => {
-        toast.error("Registration Failed");
+        toast.error("Login failed");
         console.log(error);
       },
     });
@@ -97,7 +100,7 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="text-center">
+              <Button type="submit" className="text-center" disabled={isPending}>
                 Login
               </Button>
             </form>

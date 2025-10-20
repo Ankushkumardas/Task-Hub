@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuth } from "~/components/provider/authcontext";
+import Dashboard from "../dashboard/dashboard";
 
 const Authlayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -11,11 +12,9 @@ const Authlayout = () => {
     );
   }
   if (isAuthenticated) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <Navigate to="/dashboard"  />
-      </div>
-    );
+    return (<div className=" h-screen flex items-center justify-center">
+      <Dashboard/>
+      </div>)
   }
   return (
     <div className="w-full h-screen flex items-center justify-center">

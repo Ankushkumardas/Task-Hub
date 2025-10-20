@@ -1,0 +1,1 @@
+export const publicRoutes=["/signup","/login","/verify-email","/reset-password","/forgot-password","/"]
