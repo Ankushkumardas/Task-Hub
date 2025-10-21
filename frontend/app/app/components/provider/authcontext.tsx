@@ -36,7 +36,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Decode JWT payload
         const base64Payload = userinfo.split('.')[1];
         const payload = JSON.parse(atob(base64Payload));
-        setUser(payload);
+        const userdata = localStorage.getItem("user");
+        setUser(userdata ? JSON.parse(userdata) : null);
         setisAuthenticated(true);
       } catch (e) {
         setUser(null);

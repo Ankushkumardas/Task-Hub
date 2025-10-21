@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { resetpasswordschema } from "~/lib/schema";
 import { z } from "zod";
 import {
@@ -64,9 +64,10 @@ toast.error("erro in reseting password")
           </CardDescription>
           <CardContent>
             {success ? (
-              <div className="flex justify-center items-center h-screen">
+              <div className="flex justify-center items-center flex-col ">
                 <HiOutlineCheckBadge size={42} className="text-green-500 " />
                 <h1 className=" text-center">Password reset successfull</h1>
+                <Link to={'/login'} className=" text-blue-500">Go to Login</Link>
               </div>
             ) : (
               <Form {...form}>

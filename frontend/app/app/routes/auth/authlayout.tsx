@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "~/components/provider/authcontext";
-import Dashboard from "../dashboard/dashboard";
 
 const Authlayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
