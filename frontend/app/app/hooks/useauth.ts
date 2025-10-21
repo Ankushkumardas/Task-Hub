@@ -17,3 +17,15 @@ export const useLoginMutation=()=>{
 
     })
 };
+//for forgotpassowrd route
+export const useForgotpasswordmutation = () => {
+  return useMutation({
+    mutationFn: (data: { email: string }) => postdata('/auth/reset-password-request', data),
+  });
+};
+//to resetpassword woth the new password
+export const useResetpassowrdmutation=()=>{
+return useMutation({
+  mutationFn:(data:{newpassword:string,confirmpassword:string,token:string})=>postdata('/auth/reset-password',data)
+})
+}

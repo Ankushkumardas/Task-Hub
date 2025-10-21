@@ -18,7 +18,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "~/hooks/useauth";
 import { useAuth } from "~/components/provider/authcontext";
 import { toast } from "sonner";

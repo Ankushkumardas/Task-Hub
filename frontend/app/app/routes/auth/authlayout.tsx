@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "~/components/provider/authcontext";
 import Dashboard from "../dashboard/dashboard";
 
@@ -12,9 +12,11 @@ const Authlayout = () => {
     );
   }
   if (isAuthenticated) {
-    return (<div className=" h-screen flex items-center justify-center">
-      <Dashboard/>
-      </div>)
+    return (
+      <div className=" h-screen flex items-center justify-center">
+        <Navigate to={"/dashboard"} />
+      </div>
+    );
   }
   return (
     <div className="w-full h-screen flex items-center justify-center">

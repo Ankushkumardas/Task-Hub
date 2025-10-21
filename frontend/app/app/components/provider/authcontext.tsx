@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "~/types";
 import { queryClient } from "./recatqueryProvider";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { publicRoutes } from "~/lib";
 
 interface AuthContextType {

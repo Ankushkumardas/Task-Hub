@@ -8,7 +8,6 @@ export default [
         route('forgot-password', './routes/auth/forgotpassword.tsx'),
         route('reset-password', './routes/auth/resetpassword.tsx'),
         route('verify-email', './routes/auth/verifyemail.tsx'),
-        // route('dashboard', './routes/dashboard/dashboard.tsx'),
         route('*', './routes/notfound.tsx'), // catch-all route
     ]),
     layout("./routes/dashboard/dashboard.tsx",[

@@ -15,3 +15,16 @@ export const signupschema = z.object({
     message: "Password does not match",
     path: ["confirmpassword"],
 });
+
+export const resetpasswordschema = z.object({
+    newpassword: z.string().min(4, "password length should be more than 4 letters"),
+    confirmpassword: z.string().min(4, "confirm password with new password"),
+}).refine((data) => data.newpassword === data.confirmpassword, {
+    message: "Password does not match",
+    path: ["confirmpassword"],
+});
+
+
+export const forgotpasswordschema=z.object({
+    email:z.string().email("Invalid email address")
+});
