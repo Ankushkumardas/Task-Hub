@@ -1,37 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Workspace } from "~/types";
 import { useAuth } from "../provider/authcontext";
 import { Button } from "../ui/button";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IoSettingsOutline } from "react-icons/io5";
+import { RxDashboard } from "react-icons/rx";
+
 const SidebarComponent = ({
   currentworkspace,
 }: {
   currentworkspace: Workspace | null;
 }) => {
   const { user, logout } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
   const [iscollapse, setiscollapse] = useState(false);
   const navitems = [
-    { title: "Dashboard", href: "/dashboard", icon: "" },
-    { title: "Workspace", href: "/workspace", icon: "" },
-    { title: "My Tasks", href: "/my-tasks", icon: "" },
-    { title: "Members", href: "/members", icon: "" },
-    { title: "Archieved", href: "/archieved", icon: "" },
-    { title: "Settings", href: "/settings", icon: "" },
+    { title: "Dashboard", href: "/dashboard", icon: <RxDashboard size={16}/> },
+    { title: "Workspace", href: "/workspace", icon: <IoSettingsOutline size={16}/>},
+    { title: "My Tasks", href: "/my-tasks", icon: <IoSettingsOutline size={16}/>},
+    { title: "Members", href: "/members", icon: <IoSettingsOutline size={16}/> },
+    { title: "Archieved", href: "/archieved", icon: <IoSettingsOutline size={16}/> },
+    { title: "Settings", href: "/settings", icon: <IoSettingsOutline size={16}/> },
   ];
   return (
     <div
       className={`h-screen flex flex-col transition-all duration-300 ${
-        iscollapse ? "w-16" : "w-46"
+        iscollapse ? "w-16 " : "w-46"
       } border border-slate-200 border-r`}
     >
       <div className="flex items-center justify-between p-3 ">
         <span
-          className={` text-md transition-all duration-300 ${
+          className={` text-lg ml-2  font-semibold transition-all duration-300 ${
             iscollapse ? "hidden" : "block"
           }`}
         >
-          {currentworkspace ? currentworkspace.name : "No Workspace"}
+          TaskHub
         </span>
         <Button
           variant={"outline"}
@@ -71,23 +75,41 @@ const SidebarComponent = ({
           )}
         </Button>
       </div>
-      <nav className="flex-1 p-2">
-        {navitems.map((item) => (
-          <a
-            key={item.title}
-            href={item.href}
-            className="flex items-center gap-3 p-2 rounded hover:bg-slate-200 transition-colors duration-200"
-          >
-            {/* Placeholder for icon */}
-            <span
-              className={`transition-all duration-300 ${
-                iscollapse ? "hidden" : "block"
+      <nav className="flex-1 p-2 space-y-1 w-full">
+        {navitems.map((item) => {
+          const isActive = location.pathname === item.href;
+          return (
+            <button
+              key={item.title}
+              aria-current={isActive ? "page" : undefined}
+              className={`flex items-center gap-3 p-2 rounded transition-colors duration-200 w-full ${
+                isActive
+                  ? "bg-blue-100 text-blue-700 hover:bg-blue-100"
+                  : "text-gray-700 hover:bg-slate-200"
               }`}
+              onClick={() => {
+                if (item.href === "/workspace") {
+                  navigate(item.href);
+                } else if (currentworkspace && currentworkspace._id) {
+                  navigate(`${item.href}/${currentworkspace._id}`);
+                } else {
+                  navigate(item.href);
+                }
+              }}
             >
-              {item.title}
-            </span>
-          </a>
-        ))}
+              <p className="">
+                {item.icon}
+                </p>
+              <span
+                className={`transition-all duration-300 w-full text-left ${
+                  iscollapse ? "hidden" : "block"
+                }`}
+              >
+                {item.title}
+              </span>
+            </button>
+          );
+        })}
       </nav>
       {/* <div className="p-3">
             <div className={`mb-2 ${iscollapse ? 'hidden' : 'block'}`}>

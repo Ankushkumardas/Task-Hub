@@ -29,29 +29,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   //check if user is authentcated or logged in
   useEffect(() => {
-    const checkAuth=async()=>{
-    const userinfo = localStorage.getItem("token");
-    if (userinfo && userinfo !== "undefined") {
-      try {
-        // Decode JWT payload
-        const base64Payload = userinfo.split('.')[1];
-        const payload = JSON.parse(atob(base64Payload));
-        const userdata = localStorage.getItem("user");
-        setUser(userdata ? JSON.parse(userdata) : null);
-        setisAuthenticated(true);
-      } catch (e) {
-        setUser(null);
-        setisAuthenticated(false);
+    let isMounted = true;
+    const checkAuth = async () => {
+      const userinfo = localStorage.getItem("token");
+      if (userinfo && userinfo !== "undefined") {
+        try {
+          // Decode JWT payload
+          const base64Payload = userinfo.split('.')[1];
+          const payload = JSON.parse(atob(base64Payload));
+          const userdata = localStorage.getItem("user");
+          if (isMounted) {
+            setUser(userdata ? JSON.parse(userdata) : null);
+            setisAuthenticated(true);
+          }
+        } catch (e) {
+          if (isMounted) {
+            setUser(null);
+            setisAuthenticated(false);
+          }
+        }
+      } else {
+        if (isMounted) {
+          setisAuthenticated(false);
+          setUser(null);
+        }
+        if (!ispublicRoute && isMounted) {
+          setTimeout(() => navigate('/login', { replace: true }), 0);
+        }
       }
-    } else {
-      setisAuthenticated(false);
-      if(!ispublicRoute){
-        navigate('/login')
-      }
-    }
-    setIsLoading(false)
-  }
-  checkAuth()
+      if (isMounted) setIsLoading(false);
+    };
+    checkAuth();
+    return () => { isMounted = false; };
   }, []);
 
   //

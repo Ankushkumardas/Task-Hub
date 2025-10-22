@@ -1,18 +1,21 @@
-import React, { useState } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {  Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "~/components/provider/authcontext";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "~/components/layout/header";
 import type { Workspace } from "~/types";
 import SidebarComponent from "~/components/layout/sidebarcomponent";
+import CreateWorkspace from "~/components/workspace/CreateWorkspace";
 
 const DashboardLayout = () => {
   const { logout, isAuthenticated, isLoading, user } = useAuth();
   const navigate = useNavigate();
+
   const [iscreatingworkspace, setiscreatingworkspace] = useState(false);
   const [currentworkspace, setcurrentworkspace] = useState<Workspace | null>(
     null
   );
+
   // 🔹 Show spinner while loading
   if (isLoading) {
     return (
@@ -33,29 +36,35 @@ const DashboardLayout = () => {
       </div>
     );
   }
-  if (!isAuthenticated) {
-    return <Navigate to={"/signup"} />;
-  }
-
+//
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/signup", { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+//
   const handleworkspaceselected = (workspace: Workspace) => {
     setcurrentworkspace(workspace);
   };
   return (
     <div className="w-full h-screen flex">
-      {/* sidebar component */}
-      <SidebarComponent currentworkspace={currentworkspace}/>
+      <SidebarComponent currentworkspace={currentworkspace} />
       <div className=" flex flex-1 flex-col h-full">
         <Header
           onworkspaceselected={handleworkspaceselected}
-          selectedworkspace={null}
+          selectedworkspace={currentworkspace}
           oncreatedworkspace={() => setiscreatingworkspace(true)}
         />
-        <main className=" flex-1 overflow-y-auto p-4 h-full w-full">
-          <div className=" container mx-auto sm:px-2 lg:px-4 py-0 md:px-3 w-full">
+        <main className=" flex-1 overflow-y-auto px-4 h-full w-full">
+          <div className=" mx-auto container px-2 sm:px-2 lg:px-4 py-0 md:py-4 w-full h-full">
             <Outlet />
           </div>
         </main>
       </div>
+      <CreateWorkspace
+        iscreatingworkspace={iscreatingworkspace}
+        setiscreatingworkspace={setiscreatingworkspace}
+      />
     </div>
   );
 };

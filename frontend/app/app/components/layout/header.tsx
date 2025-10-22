@@ -4,7 +4,6 @@ import { useAuth } from "../provider/authcontext";
 import { Button } from "../ui/button";
 import { PiBellRinging } from "react-icons/pi";
 import { FiPlus } from "react-icons/fi";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { RxAvatar } from "react-icons/rx";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import WorkspaceAvatar from "../workspace/workspaceavatar";
 
 interface HeaderProps {
@@ -61,7 +59,7 @@ const Header = ({
             <DropdownMenuGroup>
               {workspaces.map((workspace) => (
                 <DropdownMenuItem
-                  key={workspace._id}
+                  // key={workspace._id}
                   onClick={() => onworkspaceselected(workspace)}
                 >
                   {workspace.color && (
@@ -76,8 +74,8 @@ const Header = ({
             </DropdownMenuGroup>
             <DropdownMenuGroup>
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem className=" flex mt-1 items-center" onClick={oncreatedworkspace}>
-                   <FiPlus className="mr-1"/> Create Workspace
+                <DropdownMenuItem className=" flex mt-1 items-center cursor-pointer" onClick={oncreatedworkspace}>
+                   <FiPlus className="mr-1 "/> Create Workspace
                 </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -104,13 +102,13 @@ const Header = ({
             >
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel className="mt-1">
+              <DropdownMenuLabel className="mt-1 text-blue-500">
                 <Link to={"/user/profile"}>Profile</Link>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuLabel
                 onClick={logout}
-                className="cursor-pointer mt-1"
+                className="cursor-pointer mt-1 text-red-500"
               >
                 Logout
               </DropdownMenuLabel>

@@ -1,19 +1,19 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "~/components/provider/authcontext";
+import React, { useEffect } from "react";
 
 const Authlayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
   if (isLoading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
         <h1>Loading...</h1>
-      </div>
-    );
-  }
-  if (isAuthenticated) {
-    return (
-      <div className=" h-screen flex items-center justify-center">
-        <Navigate to={"/dashboard"} />
       </div>
     );
   }
