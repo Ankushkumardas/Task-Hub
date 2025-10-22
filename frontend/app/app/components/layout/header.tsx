@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import WorkspaceAvatar from "../workspace/workspaceavatar";
 
 interface HeaderProps {
@@ -28,8 +28,10 @@ const Header = ({
   selectedworkspace,
 }: HeaderProps) => {
   const { user, logout } = useAuth();
-  const workspaces=["a","b"];
-  return (
+
+  const {workspaces}=useLoaderData() as any;
+console.log(workspaces?.worskspaces)
+    return (
     <div className="sticky top-0 z-40 border-b border-slate-200 shadow-xs p-2">
       <div className=" flex items-center justify-between sm:px-2 lg:px-4 py-0 md:px-3">
         <DropdownMenu>
@@ -52,30 +54,31 @@ const Header = ({
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent  className="w-40 bg-white z-50 p-2 shadow-sm rounded-md border border-slate-200 mt-1"
+          <DropdownMenuContent  className="w-38 bg-white z-50 p-2 shadow-sm rounded-md border border-slate-200 mt-1"
               align="start">
-            <DropdownMenuLabel>Workspace</DropdownMenuLabel>
+            <DropdownMenuLabel className="pl-2">Workspace</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {workspaces.map((workspace) => (
+              {workspaces?.worskspaces?.map((workspace:any) => (
                 <DropdownMenuItem
-                  // key={workspace._id}
-                  onClick={() => onworkspaceselected(workspace)}
+                  key={workspace._id}
+                  onClick={() => onworkspaceselected(workspace)} className="flex gap-1 space-y-1 mt-1 pl-2"
                 >
                   {workspace.color && (
                     <WorkspaceAvatar
                       color={workspace.color}
                       name={workspace.name}
+                      
                     />
                   )}
-                  <span>{workspace.name}</span>
+                  <span className=" pl-1">{workspace.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuGroup>
             <DropdownMenuGroup>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem className=" flex mt-1 items-center cursor-pointer" onClick={oncreatedworkspace}>
-                   <FiPlus className="mr-1 "/> Create Workspace
+                   <FiPlus className="mr-2 "/> Create Workspace
                 </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

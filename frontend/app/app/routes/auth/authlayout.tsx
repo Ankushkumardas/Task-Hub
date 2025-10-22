@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "~/components/provider/authcontext";
 import React, { useEffect } from "react";
 
@@ -7,7 +7,7 @@ const Authlayout = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      navigate("/dashboard", { replace: true });
+      <Navigate to={'/dashboard'}/>
     }
   }, [isLoading, isAuthenticated, navigate]);
   if (isLoading) {

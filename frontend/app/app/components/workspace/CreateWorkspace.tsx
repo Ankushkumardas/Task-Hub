@@ -3,7 +3,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { workspaceSchema } from "~/lib/schema";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import {
   Form,
   FormControl,
@@ -13,30 +19,34 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../provider/authcontext";
 import { Button } from "../ui/button";
+import { useCreateWorkspace } from "~/hooks/useWorkspace";
+import { toast } from "sonner";
 
 interface CreateWorkspaceProps {
   iscreatingworkspace: boolean;
   setiscreatingworkspace: (iscreatingworkspace: boolean) => void;
-}
-const isPending=false;
-// 
+};
+
+
+//
 export const colorOptions = [
-    "red",
-    "green",
-    "blue",
-    "yellow",
-    "purple",
-    "orange",
-    "teal",
-    "pink",
-    "navy",
-    "limegreen",
+  "red",
+  "green",
+  "blue",
+  "yellow",
+  "purple",
+  "orange",
+  "teal",
+  "pink",
+  "navy",
+  "limegreen",
 ];
 
-type WorkspaceForm = z.infer<typeof workspaceSchema>;
+export type WorkspaceForm = z.infer<typeof workspaceSchema>;
+
 
 const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
   iscreatingworkspace,
@@ -44,13 +54,19 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
 }) => {
   const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { mutate, isPending } = useCreateWorkspace();
   React.useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate("/login", { replace: true });
     }
   }, [isLoading, isAuthenticated, navigate]);
-  if (isLoading) return null;
-  if (!isAuthenticated) return null;
+  if (isLoading) return <div>Loading...</div>;
+  if (!isAuthenticated)
+    return (
+      <div>
+        <Navigate to="/login" replace={true} />
+      </div>
+    );
 
   const form = useForm<WorkspaceForm>({
     resolver: zodResolver(workspaceSchema),
@@ -62,11 +78,21 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
   });
 
   const onsumbit = (data: WorkspaceForm) => {
+    mutate(data,{
+      onSuccess:(data:any)=>{
+        setiscreatingworkspace(false)
+        toast.success(data?.message);
+        navigate(`/workspaces/${data.workspace._id}`)
+      },onError:(error:any)=>{
+        console.log(error);
+        toast.error("Error in creating workspace")
+      }
+    })
     console.log("craete workspace data", data);
   };
-    function cn(...classes: (string | false | undefined | null)[]): string {
-        return classes.filter(Boolean).join(" ");
-    }
+  function cn(...classes: (string | false | undefined | null)[]): string {
+    return classes.filter(Boolean).join(" ");
+  }
 
   return (
     <>
@@ -116,9 +142,18 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
                       <FormLabel>Color</FormLabel>
                       <FormControl>
                         <div className=" flex gap-2">
-                            {colorOptions.map((color)=>(
-                                <div key={color} className={cn(`w-6 h-6 rounded-full`,field.value===color&&`border-1 border-blue-500`)} style={{backgroundColor:color}}onClick={()=>field.onChange(color)}></div>
-                            ))}
+                          {colorOptions.map((color) => (
+                            <div
+                              key={color}
+                              className={cn(
+                                `w-6 h-6 rounded-full`,
+                                field.value === color &&
+                                  `border-1 border-blue-500`
+                              )}
+                              style={{ backgroundColor: color }}
+                              onClick={() => field.onChange(color)}
+                            ></div>
+                          ))}
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -128,7 +163,7 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
               </div>
               <DialogFooter className="mt-2 ">
                 <Button type="submit" disabled={isPending}>
-{isPending?"CreateTracing..":"Create"}
+                  {isPending ? "CreateTracing.." : "Create"}
                 </Button>
               </DialogFooter>
             </form>

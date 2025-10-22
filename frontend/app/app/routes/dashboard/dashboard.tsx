@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
-import {  Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "~/components/provider/authcontext";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "~/components/layout/header";
 import type { Workspace } from "~/types";
 import SidebarComponent from "~/components/layout/sidebarcomponent";
 import CreateWorkspace from "~/components/workspace/CreateWorkspace";
+import { fetchdata } from "~/lib/fetchutil";
+//in react-router-v& we have a feature where we cann load teh data before teh page load
+export const clientLoader = async () => {
+  try {
+    const [workspaces] = await Promise.all([fetchdata("/workspaces")]);
+    console.log(workspaces);
+    return { workspaces };
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const DashboardLayout = () => {
   const { logout, isAuthenticated, isLoading, user } = useAuth();
@@ -15,6 +26,12 @@ const DashboardLayout = () => {
   const [currentworkspace, setcurrentworkspace] = useState<Workspace | null>(
     null
   );
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/signup");
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
   // 🔹 Show spinner while loading
   if (isLoading) {
@@ -36,13 +53,6 @@ const DashboardLayout = () => {
       </div>
     );
   }
-//
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate("/signup", { replace: true });
-    }
-  }, [isLoading, isAuthenticated, navigate]);
-//
   const handleworkspaceselected = (workspace: Workspace) => {
     setcurrentworkspace(workspace);
   };

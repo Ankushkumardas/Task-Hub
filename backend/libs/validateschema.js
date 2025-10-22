@@ -31,3 +31,17 @@ export const resetpasswordschrma = z.object({
 export const emailschema=z.object({
     email:z.string().email("Invalid email address")
 });
+
+export const workspaceSchema = z.object({
+  name: z.string().min(1, "Name is required").trim(),
+  description: z.string().optional(),
+  color: z.string().min(1,"Color is required"),
+  // createBy: z.string().min(1, "Created by is required"), 
+  // members: z.array(
+  //   z.object({
+  //     user: z.string().min(1, "User is required"), // Should be ObjectId string
+  //     role: z.enum(["owner", "member", "viewer", "admin"]).default("member"),
+  //   })
+  // ).optional(),
+  // projects: z.array(z.string()).optional(), // Should be array of ObjectId strings
+});
