@@ -1,0 +1,74 @@
+import mongoose from "mongoose";
+import { title } from "process";
+
+const taskschema = mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["To Do", "In Progress", "Done", "Review"],
+      default: "To Do",
+    },
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High", "Critical"],
+      default: "Medium",
+    },
+    dueDate: {
+      type: Date,
+    },
+    assignees: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
+    completedAt: {
+      type: Date,
+    },
+    estimatedHours: {
+      type: Number,
+      min: 0,
+    },
+    actualHours: {
+      type: Number,
+      min: 0,
+    },
+    tags: [{ type: String }],
+    subtasks: [
+      {
+        title: { type: String, required: true },
+        comleted: { type: Boolean, default: false },
+        createdAt: { type: Date, default: Date.now() },
+      },
+    ],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    attachments: [
+      {
+        filename: { type: String, required: true },
+        fileurl: { type: String, required: true },
+        filetype: { type: String, required: true },
+        filesize: { type: Number, required: true },
+        uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        uploadedAt: { type: Date, default: Date.now() },
+      },
+    ],
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    isArchieved: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
+const Task = mongoose.model("Task", taskschema);
+export default Task;

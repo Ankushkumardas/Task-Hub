@@ -11,10 +11,10 @@ import { fetchdata } from "~/lib/fetchutil";
 export const clientLoader = async () => {
   try {
     const [workspaces] = await Promise.all([fetchdata("/workspaces")]);
-    console.log(workspaces);
     return { workspaces };
   } catch (error) {
     console.log(error);
+    return { workspaces: [] };
   }
 };
 
@@ -60,11 +60,14 @@ const DashboardLayout = () => {
     <div className="w-full h-screen flex">
       <SidebarComponent currentworkspace={currentworkspace} />
       <div className=" flex flex-1 flex-col h-full">
-        <Header
-          onworkspaceselected={handleworkspaceselected}
-          selectedworkspace={currentworkspace}
-          oncreatedworkspace={() => setiscreatingworkspace(true)}
-        />
+        {isAuthenticated && user && (
+          <Header
+            onworkspaceselected={handleworkspaceselected}
+            selectedworkspace={currentworkspace}
+            oncreatedworkspace={() => setiscreatingworkspace(true)}
+            logout={logout ? () => { logout(); } : () => {}}
+          />
+        )}
         <main className=" flex-1 overflow-y-auto px-4 h-full w-full">
           <div className=" mx-auto container px-2 sm:px-2 lg:px-4 py-0 md:py-4 w-full h-full">
             <Outlet />

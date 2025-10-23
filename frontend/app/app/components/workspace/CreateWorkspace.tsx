@@ -28,25 +28,24 @@ import { toast } from "sonner";
 interface CreateWorkspaceProps {
   iscreatingworkspace: boolean;
   setiscreatingworkspace: (iscreatingworkspace: boolean) => void;
-};
-
+}
 
 //
 export const colorOptions = [
-  "red",
-  "green",
-  "blue",
-  "yellow",
-  "purple",
-  "orange",
-  "teal",
-  "pink",
-  "navy",
-  "limegreen",
+  "#FFCDD2", // light red
+  "#F8BBD0", // light pink
+  "#E1BEE7", // light purple
+  "#D1C4E9", // light deep purple
+  "#C5CAE9", // light indigo
+  "#BBDEFB", // light blue
+  "#B3E5FC", // light light blue
+  "#B2EBF2", // light cyan
+  "#B2DFDB", // light teal
+  "#C8E6C9", // light green
+  "#DCEDC8", // light light green
 ];
 
 export type WorkspaceForm = z.infer<typeof workspaceSchema>;
-
 
 const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
   iscreatingworkspace,
@@ -55,12 +54,15 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
   const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const { mutate, isPending } = useCreateWorkspace();
+
   React.useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate("/login", { replace: true });
     }
   }, [isLoading, isAuthenticated, navigate]);
+
   if (isLoading) return <div>Loading...</div>;
+  
   if (!isAuthenticated)
     return (
       <div>
@@ -78,16 +80,17 @@ const CreateWorkspace: React.FC<CreateWorkspaceProps> = ({
   });
 
   const onsumbit = (data: WorkspaceForm) => {
-    mutate(data,{
-      onSuccess:(data:any)=>{
-        setiscreatingworkspace(false)
+    mutate(data, {
+      onSuccess: (data: any) => {
+        setiscreatingworkspace(false);
         toast.success(data?.message);
-        navigate(`/workspaces/${data.workspace._id}`)
-      },onError:(error:any)=>{
+        navigate(`/workspaces/${data.workspace._id}`);
+      },
+      onError: (error: any) => {
         console.log(error);
-        toast.error("Error in creating workspace")
-      }
-    })
+        toast.error("Error in creating workspace");
+      },
+    });
     console.log("craete workspace data", data);
   };
   function cn(...classes: (string | false | undefined | null)[]): string {

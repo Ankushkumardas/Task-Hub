@@ -21,16 +21,17 @@ interface HeaderProps {
   onworkspaceselected: (workspace: Workspace) => void;
   selectedworkspace: Workspace | null;
   oncreatedworkspace: () => void;
+  logout:()=>void
 }
 const Header = ({
   oncreatedworkspace,
   onworkspaceselected,
   selectedworkspace,
+  logout
 }: HeaderProps) => {
-  const { user, logout } = useAuth();
-
+  const { user} = useAuth();
+//load data before the ui loads using clientLoader from dashboard.tsx clientLoader-->useLoader
   const {workspaces}=useLoaderData() as any;
-console.log(workspaces?.worskspaces)
     return (
     <div className="sticky top-0 z-40 border-b border-slate-200 shadow-xs p-2">
       <div className=" flex items-center justify-between sm:px-2 lg:px-4 py-0 md:px-3">

@@ -17,7 +17,7 @@ const SidebarComponent = ({
   const [iscollapse, setiscollapse] = useState(false);
   const navitems = [
     { title: "Dashboard", href: "/dashboard", icon: <RxDashboard size={16}/> },
-    { title: "Workspace", href: "/workspace", icon: <IoSettingsOutline size={16}/>},
+    { title: "Workspace", href: "/workspaces", icon: <IoSettingsOutline size={16}/>},
     { title: "My Tasks", href: "/my-tasks", icon: <IoSettingsOutline size={16}/>},
     { title: "Members", href: "/members", icon: <IoSettingsOutline size={16}/> },
     { title: "Archieved", href: "/archieved", icon: <IoSettingsOutline size={16}/> },
@@ -88,7 +88,7 @@ const SidebarComponent = ({
                   : "text-gray-700 hover:bg-slate-200"
               }`}
               onClick={() => {
-                if (item.href === "/workspace") {
+                if (item.href === "/workspaces") {
                   navigate(item.href);
                 } else if (currentworkspace && currentworkspace._id) {
                   navigate(`${item.href}/${currentworkspace._id}`);
@@ -111,19 +111,6 @@ const SidebarComponent = ({
           );
         })}
       </nav>
-      {/* <div className="p-3">
-            <div className={`mb-2 ${iscollapse ? 'hidden' : 'block'}`}>
-                <div className="font-semibold">{user?.name}</div>
-                <div className="text-xs text-gray-400">{user?.email}</div>
-            </div>
-            <button
-                onClick={logout
-                }
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded text-sm"
-            >
-                {iscollapse ? <span>!</span> : <span>Logout</span>}
-            </button>
-        </div> */}
     </div>
   );
 };
