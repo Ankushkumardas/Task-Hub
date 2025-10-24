@@ -1,5 +1,5 @@
-import mongoose, { model, Schema } from "mongoose";
-const workspaceSchema = new Schema({
+import mongoose from "mongoose";
+const workspaceSchema =  mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -31,5 +31,5 @@ const workspaceSchema = new Schema({
   ]
 },{timestamps:true});
 
-const Workspace = model("Workspace", workspaceSchema);
+const Workspace = mongoose.model("Workspace", workspaceSchema);
 export default Workspace;

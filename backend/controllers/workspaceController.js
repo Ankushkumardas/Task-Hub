@@ -67,10 +67,10 @@ export const getWorkspaceProjects = async (req, res) => {
     const projects = await Project.find({
       workspace: workspaceid,
       isArchieved: false,
-      members: { $in: [req?.user._id] },
+      // members: { $in: [req?.user._id] },
     })
       .sort({ createAt: -1 })
-      .populate("tasks", "status");
+      // .populate("tasks", "status");
     res
       .status(200)
       .json({ message: "workspace Projects", projects, workspace });

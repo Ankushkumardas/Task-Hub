@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '~/components/ui/button';
-type Data = {
+export type Data = {
     title: string;
     descritpion: string;
     buttontext: string;
@@ -8,7 +8,7 @@ type Data = {
 };
 const NoDataFound = ({ title, descritpion, buttontext, buttonAction }: Data) => {
   return (
-    <div className="flex flex-col items-center justify-center  border p-4 rounded-md ">
+    <div className="flex flex-col items-center justify-center  border p-4 rounded-md w-70 text-center  hover:shadow-sm transition-shadow">
       <h1 className="text-lg font-semibold mb-2">{title}</h1>
       <p className="mb-4 text-gray-600 text-center">{descritpion}</p>
       <Button

@@ -19,20 +19,23 @@ export interface Workspace{
         role:"admin"|"member"|"owner"|"viewer";
         joinedAt:Date;
     }[];
+    projects:Project[];
     createdAt:Date;
     updatedAt:Date;
 };
 
-export enum ProjectStatus {
-    Planning = "Planning",
-    InProgress = "In Progress",
-    OnHold = "On Hold",
-    Completed = "Completed",
-    Cancelled = "Cancelled"
-}
+// Removed duplicate ProjectStatus enum
 export interface ProjectMember {
     user: User;
     role: "manager" | "contributor" | "viewer";
+}
+
+export enum ProjectStatus {
+  PLANNING = "Planning",
+  IN_PROGRESS = "In Progress",
+  ON_HOLD = "On Hold",
+  COMPLETED = "Completed",
+  CANCELLED = "Cancelled",
 }
 
 export interface Project {
@@ -45,14 +48,22 @@ export interface Project {
     dueDate?: Date;
     progress?: number;
     tasks?: Task[]; // Array of Task IDs
-    members?: ProjectMember[];
+    members?: {
+        user:User;
+        role:'admin'|'member'|'owner'|'viewer';
+    };
     tags?: string[];
     createdAt: Date;
     updatedAt: Date;
     createdBy?: User | string;
     isArchieved?: boolean;
 }
-
+export interface Members {
+    _id:string;
+    user: User; 
+    role: "owner" | "member" | "viewer" | "admin";
+    joinedAt: Date;
+}
 export enum TaskStatus {
     ToDo = "To Do",
     InProgress = "In Progress",
@@ -104,4 +115,9 @@ export interface Task {
     isArchieved?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
+}
+export enum ProjectMemberRole {
+  MANAGER = "manager",
+  CONTRIBUTOR = "contributor",
+  VIEWER = "viewer",
 }

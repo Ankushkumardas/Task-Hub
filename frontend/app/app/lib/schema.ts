@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ProjectStatus } from '~/types';
 
 export const loginschema = z.object({
     email: z.string().email("Invalid email address").min(10),
@@ -25,12 +26,32 @@ export const resetpasswordschema = z.object({
 });
 
 
-export const forgotpasswordschema=z.object({
-    email:z.string().email("Invalid email address")
+export const forgotpasswordschema = z.object({
+    email: z.string().email("Invalid email address")
 });
 
-export const workspaceSchema=z.object({
-    name:z.string().min(4,"Name must be 4 characters long"),
-    color:z.string().min(3,"Color must be 2 characters long "),
-    description:z.string().optional()
+export const workspaceSchema = z.object({
+    name: z.string().min(4, "Name must be 4 characters long"),
+    color: z.string().min(3, "Color must be 2 characters long "),
+    description: z.string().optional()
+})
+
+export const projectSchema = z.object({
+    title: z.string().min(1, "Title must be at least 3 characters"),
+    description: z.string().optional(),
+    status: z.nativeEnum(ProjectStatus),
+    startDate: z.string().min(1, "Start date is required"),
+    endDate: z.string().min(1, "Due date is required"),
+    members: z
+        .array(
+            z.object({
+                user: z.string(),
+                role: z.enum(["manager", "contributor", "viewer"]),
+            })
+        )
+        .optional(),
+    tags: z.string().optional(),
+    // tags: z.array(z.string()).optional(),
+    // createdBy: z.string().min(1, "CreatedBy is required"),
+    // isArchieved: z.boolean().optional()
 })

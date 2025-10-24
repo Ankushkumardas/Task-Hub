@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router";
+import CreateprojectDialogBox from "~/components/projects/CreateprojectDialogBox";
+import ProjectList from "~/components/workspace/projectList";
 import WorkspaceHeader from "~/components/workspace/WorkspaceHeader";
 import { useGetWorkspaceQuery } from "~/hooks/useWorkspace";
 import type { Workspace, Project } from "~/types";
@@ -24,7 +26,7 @@ const WorkspaceDetails = () => {
     error: any;
   }
   const workspace = data?.workspace;
-  console.log("workspaceid:", workspaceid, "isLoading:", isLoading, "isError:", isError, "data:", workspace, "error:", error);
+  // console.log(data?.projects, "workspace projects");
 
   if (isLoading) {
     return <div>isLoading...</div>;
@@ -40,6 +42,19 @@ const WorkspaceDetails = () => {
      members={data?.workspace?.members}
      iscreatedproject={()=>setiscreatedproject(true)}
      isInviteMember={()=>setisInviteMember(true)}
+     />
+
+     <ProjectList
+     workspaceid={workspace._id}
+     project={data?.projects}
+     onCreateproject={()=>setiscreatedproject(true)}
+     />
+
+     <CreateprojectDialogBox
+     isopen={iscreatedproject}
+     opopnechange={setiscreatedproject}
+     workspaceid={workspaceid}
+     workspaceMembers={workspace.members as any}
      />
     </div>
   );

@@ -23,6 +23,20 @@ const SidebarComponent = ({
     { title: "Archieved", href: "/archieved", icon: <IoSettingsOutline size={16}/> },
     { title: "Settings", href: "/settings", icon: <IoSettingsOutline size={16}/> },
   ];
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 800) {
+        setiscollapse(true);
+      } else {
+        setiscollapse(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
   return (
     <div
       className={`h-screen flex flex-col transition-all duration-300 ${
