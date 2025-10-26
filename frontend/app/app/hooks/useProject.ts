@@ -1,15 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 // Backend payload type for project creation
 export type ProjectCreatePayload = {
     title: string;
     description?: string;
     status: string;
     startDate?: Date;
-    endDate?: Date;
+    dueDate?: Date;
     tags?: string[];
     members?: { user: string; role: "manager" | "contributor" | "viewer" }[];
 };
-import { postdata } from "~/lib/fetchutil"
+import { fetchdata, postdata } from "~/lib/fetchutil"
 
 export const useCreateProject = () => {
     const queryClient = useQueryClient();
@@ -24,3 +24,11 @@ export const useCreateProject = () => {
         },
     });
 };
+
+
+export const useProjectQuery = (projectid: string) => {
+    return useQuery({
+        queryKey: ["project", projectid],
+        queryFn: () => fetchdata(`/projects/${projectid}/tasks`)
+    });
+}

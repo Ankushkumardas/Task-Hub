@@ -36,14 +36,7 @@ export const workspaceSchema = z.object({
   name: z.string().min(1, "Name is required").trim(),
   description: z.string().optional(),
   color: z.string().min(1,"Color is required"),
-  // createBy: z.string().min(1, "Created by is required"), 
-  // members: z.array(
-  //   z.object({
-  //     user: z.string().min(1, "User is required"), // Should be ObjectId string
-  //     role: z.enum(["owner", "member", "viewer", "admin"]).default("member"),
-  //   })
-  // ).optional(),
-  // projects: z.array(z.string()).optional(), // Should be array of ObjectId strings
+
 });
 
 export const projectSchema=z.object({
@@ -51,7 +44,7 @@ export const projectSchema=z.object({
   description: z.string().optional(),
   status:z.enum(["Planning","In Progress","Completed","On Hold","Cancellled"]).default("Planning"),
   startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
+  dueDate: z.string().min(1, "End date is required"),
   tags: z.array(z.string()).optional(),
   members: z.array(
     z.object({
@@ -60,3 +53,12 @@ export const projectSchema=z.object({
     })
   ).optional(), 
 })
+
+export const taskSchema=z.object({
+  title: z.string().min(1,"Task title is required").trim(),
+  description: z.string().optional(), 
+  status:z.enum(["To Do","In Progress","Completed","Done"]).default("To Do"),
+  priority:z.enum(["Low","Medium","High","Critical"]).default("Medium"),
+  dueDate: z.string().min(1, "Due date is required"),
+  assignees: z.array(z.string()).optional(), // Should be array of ObjectId strings
+});

@@ -47,7 +47,7 @@ export interface Project {
     startDate?: Date;
     dueDate?: Date;
     progress?: number;
-    tasks?: Task[]; // Array of Task IDs
+    tasks?: Task[]; 
     members?: {
         user:User;
         role:'admin'|'member'|'owner'|'viewer';
@@ -64,12 +64,8 @@ export interface Members {
     role: "owner" | "member" | "viewer" | "admin";
     joinedAt: Date;
 }
-export enum TaskStatus {
-    ToDo = "To Do",
-    InProgress = "In Progress",
-    Done = "Done",
-    Review = "Review"
-}
+export type TaskStatus = "To Do" | "In Progress" | "Done";
+
 
 export enum TaskPriority {
     Low = "Low",

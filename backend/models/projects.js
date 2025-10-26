@@ -17,18 +17,18 @@ const projectSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Planning", "In Progress", "On Hold", "COmpleted", "Cancelled"],
+      enum: ["Planning", "In Progress", "On Hold", "Completed", "Cancelled"],
       default: "Planning",
     },
     startDate: {
       type: Date,
     },
-    endDate: { type: Date },
+    dueDate: { type: Date },
     progress: { type: Number, min: 0, max: 100, default: 0 },
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
     members: [
       {
-        users: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         role: {
           type: String,
           enum: ["manager", "contributor", "viewer"],

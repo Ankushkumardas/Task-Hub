@@ -41,7 +41,7 @@ export const projectSchema = z.object({
     description: z.string().optional(),
     status: z.nativeEnum(ProjectStatus),
     startDate: z.string().min(1, "Start date is required"),
-    endDate: z.string().min(1, "Due date is required"),
+    dueDate: z.string().min(1, "Due date is required"),
     members: z
         .array(
             z.object({
@@ -54,4 +54,13 @@ export const projectSchema = z.object({
     // tags: z.array(z.string()).optional(),
     // createdBy: z.string().min(1, "CreatedBy is required"),
     // isArchieved: z.boolean().optional()
+});
+
+export const createTaskSchema=z.object({
+    title:z.string().min(1,"Title is required"),
+    description:z.string().optional(),
+    dueDate:z.string().optional(),
+    assignees:z.array(z.string()).optional(),
+    status:z.enum(["To Do","In Progress","Done"]).optional(),
+    priority:z.enum(["Low","Medium","High"]).optional(),
 })

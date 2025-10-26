@@ -41,7 +41,7 @@ const CreateprojectDialogBox: React.FC<CreateprojectDialogBoxProps> = ({
       description: "",
       status: ProjectStatus.PLANNING,
       startDate: "",
-      endDate: "",
+      dueDate: "",
       members:[],
       tags:"",
     },
@@ -56,7 +56,7 @@ const {mutate,isPending}=useCreateProject();
       description: data.description,
       status: data.status,
       startDate: data.startDate ? new Date(data.startDate) : undefined,
-      endDate: data.endDate ? new Date(data.endDate) : undefined,
+      dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
       tags: data.tags ? data.tags.split(",").map(tag => tag.trim()).filter(Boolean) : [],
       members: data.members || [],
     };
@@ -68,7 +68,7 @@ const {mutate,isPending}=useCreateProject();
           toast.success("Project added successfully");
           form.reset();
           opopnechange(false);
-          console.log(data)
+          // console.log(data)
         },
         onError: (error: any) => {
           toast.error("Error while adding project");
@@ -190,7 +190,7 @@ const {mutate,isPending}=useCreateProject();
               />
               <FormField
                 control={form.control}
-                name="endDate"
+                name="dueDate"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Due Date</FormLabel>

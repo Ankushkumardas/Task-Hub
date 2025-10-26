@@ -12,7 +12,6 @@ const ProjectList: React.FC<ProjectListProps> = ({
   project,
   onCreateproject,
 }) => {
-  // console.log(project)
   return (
     <div>
       <h1>Projects</h1>
@@ -27,7 +26,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
             />
           </div>
         ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 mt-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-5">
             {project.map((p) => (
               <ProjectCard
               key={p._id}
