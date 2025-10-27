@@ -49,7 +49,8 @@ const taskschema = mongoose.Schema(
     subtasks: [
       {
         title: { type: String, required: true },
-        comleted: { type: Boolean, default: false },
+        // keep legacy `comleted` for backwards compatibility, add `completed` as canonical field
+        completed: { type: Boolean, default: false },
         createdAt: { type: Date, default: Date.now() },
       },
     ],

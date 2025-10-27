@@ -7,6 +7,7 @@ import type { TaskStatus } from '~/types';
 
 const TaskStatusSelector = ({status,taskid}:{taskid:string,status:string}) => {
   const {mutate,isPending}=useTaskUpdateStatus();
+  
   const handlestatuschnage=(value:string)=>{
     mutate({taskid,status:value as TaskStatus},{onSuccess:(data:any)=>{
         console.log("Status updated");

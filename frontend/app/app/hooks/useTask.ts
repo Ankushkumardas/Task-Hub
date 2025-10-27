@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { CreateTaskForm } from "~/components/tasks/CreateTaskDialog";
 import { fetchdata, postdata, updatedata } from "~/lib/fetchutil";
-import type { TaskStatus } from "~/types";
+import type { TaskPriority, TaskStatus } from "~/types";
 
 export const useCreatetask = () => {
     const queryClient = useQueryClient();
@@ -62,3 +62,51 @@ export const useUpdateTaskDescription = () => {
         }
     });
 };
+
+export const useUpdateTaskAssignees=()=>{
+        const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(data:{taskid:string,assignees:string[]})=>updatedata(`/tasks/${data.taskid}/assignees`,{assignees:data.assignees}),
+        onSuccess: (result: any, variables: { taskid: string; assignees: string[] }) => {
+            queryClient.invalidateQueries({
+                queryKey: ["task", variables.taskid]
+            });
+        }
+    })
+}
+
+export const useUpdateTaskPriority=()=>{
+        const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(data:{taskid:string,priority:TaskPriority})=>updatedata(`/tasks/${data.taskid}/priority`,{priority:data.priority}),
+        onSuccess: (result: any, variables: { taskid: string; priority: TaskPriority }) => {
+            queryClient.invalidateQueries({
+                queryKey: ["task", variables.taskid]
+            });
+        }
+    })
+}
+
+export const useAddSubtaskToTask=()=>{
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(data:{taskid:string,title:string})=>postdata(`/tasks/${data.taskid}/add-subtask`,{title:data.title}),
+        onSuccess: (result: any, variables: { taskid: string; title: string }) => {
+            queryClient.invalidateQueries({
+                queryKey: ["task", variables.taskid]
+            });
+        }
+    })
+}
+
+export const useUpdateSubtaskOfTask=()=>{
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(data:{taskid:string,subtaskid:string,title:string,completed:boolean})=>updatedata(`/tasks/${data.taskid}/update-subtask/${data.subtaskid}`,{title:data.title,completed:data.completed}),
+        onSuccess: (result: any, variables: { taskid: string; subtaskid:string; title: string ,completed:boolean}) => {
+            queryClient.invalidateQueries({
+                queryKey: ["task", variables.taskid]
+            });
+        }
+    })
+}

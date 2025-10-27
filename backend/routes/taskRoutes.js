@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTask, getTaskDetails, updateTaskDescription, updateTaskStatus, updateTasktitle } from '../controllers/taskcontoller.js';
+import { addSubtaskToTask, createTask, getTaskDetails, updatesubtask, updateTaskAssignee, updateTaskDescription, updateTaskPriority, updateTaskStatus, updateTasktitle } from '../controllers/taskcontoller.js';
 import {authmiddleware} from '../middlewares/authmiddleware.js'
 import { z } from 'zod';
 import { validateRequest } from 'zod-express-middleware';
@@ -22,4 +22,23 @@ router.put('/:taskid/status', authmiddleware, validateRequest({
     params: z.object({ taskid: z.string() }),
     body: z.object({ status: z.enum(["To Do", "In Progress", "Done"]) }),
   }), updateTaskStatus);
+  router.put('/:taskid/assignees', authmiddleware, validateRequest({
+    params: z.object({ taskid: z.string() }),
+    body: z.object({ assignees: z.array(z.string()) })
+  }), updateTaskAssignee);
+
+  router.put('/:taskid/priority', authmiddleware, validateRequest({
+    params: z.object({ taskid: z.string() }),
+    body: z.object({ priority: z.enum(["Low", "Medium", "High"]) })
+  }), updateTaskPriority);
+
+  router.post('/:taskid/add-subtask', authmiddleware, validateRequest({
+    params: z.object({ taskid: z.string() }),
+    body: z.object({ title: z.string() })
+  }), addSubtaskToTask);
+
+  router.put('/:taskid/update-subtask/:subtaskid', authmiddleware, validateRequest({
+    params: z.object({ taskid: z.string(), subtaskid: z.string() }),
+    body: z.object({ title: z.string(), completed: z.boolean() })
+  }), updatesubtask);
 export default router;
