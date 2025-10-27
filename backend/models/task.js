@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { title } from "process";
 
 const taskschema = mongoose.Schema(
   {
@@ -18,7 +17,7 @@ const taskschema = mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["Low", "Medium", "High", "Critical"],
+      enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
     dueDate: {
@@ -30,6 +29,7 @@ const taskschema = mongoose.Schema(
         ref: "User",
       },
     ],
+    watchers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",

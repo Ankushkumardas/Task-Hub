@@ -26,7 +26,7 @@ const WorkspaceDetails = () => {
     error: any;
   }
   const workspace = data?.workspace;
-  // console.log(data?.projects, "workspace projects");
+  console.log(data?.projects, "workspace projects");
 
   if (isLoading) {
     return <div>isLoading...</div>;

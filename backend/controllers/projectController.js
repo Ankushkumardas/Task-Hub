@@ -100,8 +100,8 @@ export const getProjectTasks = async (req, res) => {
         .status(401)
         .json({ message: "You are not a member of this project " });
     }
-  const tasks = await Task.find({ project: projectid, isArchieved: false });
-  // .populate("assignees", "name email");
+  const tasks = await Task.find({ project: projectid, isArchieved: false })
+  .populate("assignees", "name email");
   // Always return project.members for frontend
   return res.status(200).json({ message: "Project details with task details", project, tasks, members: project.members });
   } catch (error) {

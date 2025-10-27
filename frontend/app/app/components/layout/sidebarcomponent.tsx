@@ -26,7 +26,7 @@ const SidebarComponent = ({
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 800) {
+      if (window.innerWidth < 1000) {
         setiscollapse(true);
       } else {
         setiscollapse(false);

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { CreateTaskForm } from "~/components/tasks/CreateTaskDialog";
-import { fetchdata, postdata } from "~/lib/fetchutil";
+import { fetchdata, postdata, updatedata } from "~/lib/fetchutil";
 
 export const useCreatetask = () => {
     const queryClient = useQueryClient();
@@ -15,9 +15,23 @@ export const useCreatetask = () => {
     });
 };
 
-export const useTaskQuery=(taskid:string)=>{
+export const useTaskQuery = (taskid: string) => {
     return useQuery({
-        queryKey:["task",taskid],
-        queryFn:()=>fetchdata(`/tasks/${taskid}`)
+        queryKey: ["task", taskid],
+        queryFn: () => fetchdata(`/tasks/${taskid}`)
     })
 }
+
+
+export const useUpdateTasktitle = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: { taskid: string; title: string }) =>
+            updatedata(`/tasks/${data.taskid}/title`, { title: data.title }),
+        onSuccess: (result: any, variables: { taskid: string; title: string }) => {
+            queryClient.invalidateQueries({
+                queryKey: ["task", variables.taskid]
+            });
+        }
+    });
+};

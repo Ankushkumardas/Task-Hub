@@ -20,7 +20,7 @@ const ProjectDetails = () => {
   const [taskfilter, settaskfilter] = useState<TaskStatus | "all">("all");
 
   const { data, isLoading, refetch } = useProjectQuery(projectid as string);
-
+// console.log(data)
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen text-lg font-semibold">
@@ -34,7 +34,15 @@ const ProjectDetails = () => {
   const projectMembers = project.members || [];
 
   const handleTaskClick = (taskid: string) => {
-    navigate(`/workspaces/${workspaceid}/projects/${projectid}/tasks/${taskid}`);
+    try {
+      navigate(`/workspaces/${workspaceid}/projects/${projectid}/tasks/${taskid}`);
+    } catch (err: any) {
+      if (err?.name === 'AbortError') {
+        // Suppress AbortError
+        return;
+      }
+      throw err;
+    }
   };
 
   return (
@@ -116,11 +124,14 @@ const ProjectDetails = () => {
         </TabsContent>
 
         <TabsContent value="todo">
+          <div className="flex items-center flex-wrap ">
+
           <TaskColumn
             title="To Do"
             tasks={tasks.filter((t) => t.status === "To Do")}
             ontaskClick={handleTaskClick}
-          />
+            />
+            </div>
         </TabsContent>
 
         <TabsContent value="inprogress">
@@ -152,7 +163,7 @@ const ProjectDetails = () => {
   );
 };
 
-export default ProjectDetails;
+export default React.memo(ProjectDetails);
 
 type TaskColumnProps = {
   title: string;
@@ -162,7 +173,7 @@ type TaskColumnProps = {
 
 const TaskColumn = ({ title, tasks, ontaskClick }: TaskColumnProps) => {
   return (
-    <div className="bg-gray-50 rounded-2xl shadow-sm p-4 border border-gray-200 min-h-[300px] flex flex-col">
+    <div className="bg-gray-50 rounded-2xl shadow-sm p-4 border border-gray-200 min-h-[300px] flex flex-col ">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
         <span className="text-sm text-gray-600 bg-gray-200 rounded-full px-3 py-1">
