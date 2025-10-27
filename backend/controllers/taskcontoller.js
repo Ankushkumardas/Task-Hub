@@ -112,38 +112,88 @@ export const updateTasktitle=async(req,res)=>{
 }
 
 export const updateTaskDescription=async(req,res)=>{
-  try {
-    const {taskid}=req.params;
-    const {description}=req.body;
-    const task=await Task.findById(taskid);
-    if(!task){
-        return res.status(401).json({message:"Task not found"})
-    }   
-    const project=await Project.findById(task.project._id);
-    if(!project){
-         return res.status(401).json({message:"Project not found"})
-    }   
-    const ismember=project.members.some((m)=>m.user.toString()===req.user._id.toString());
-    if(!ismember){
-         return res.status(401).json({message:"member not found"})
+    try {
+        const {taskid}=req.params;
+        const {description}=req.body;
+        const task=await Task.findById(taskid);
+        if(!task){
+                return res.status(401).json({message:"Task not found"})
+        }
+        const project=await Project.findById(task.project._id);
+        if(!project){
+                 return res.status(401).json({message:"Project not found"})
+        }
+        const ismember=project.members.some((m)=>m.user.toString()===req.user._id.toString());
+        if(!ismember){
+                 return res.status(401).json({message:"member not found"})
+        }
+        const olddescription=task.description;
+        task.description=description;
+        await task.save();
+        //record activity (optional)
+        try {
+            const activity=await recordActivity({
+                    userid:req.user.id,
+                    action:"updated_task_description",
+                    resourceType:"Task",
+                    details:{
+                            olddescription,
+                            newdescription:description
+                    },
+                    resourceid:task._id
+            });
+        } catch (activityError) {
+            console.error('Activity log error:', activityError);
+        }
+        res.status(200).json({message:"task description updated",task,project});
     }
-    const olddescription=task.description;
-    task.description=description;   
-    await task.save();
-    //record activity (optional)
-    const activity=await recordActivity({
-        userid:req.user.id,
-        action:"updated_task_description",  
-        resourceType:"Task",
-        details:{
-            olddescription,
-            newdescription:description
-        },
-        resourceid:task._id
-    });
-    res.status(200).json({message:"task description updated",task,project});
-  }
-    catch (error) {     
-    res.status(500).json({message:"Internal server error"});
-  }
+    catch (error) {
+        console.error('Update task description error:', error);
+        res.status(500).json({message:"Internal server error"});
+    }
+};
+
+export const updateTaskStatus=async(req,res)=>{
+    try {
+        const {taskid}=req.params;
+        const {status}=req.body;
+        const task=await Task.findById(taskid);
+        if(!task){
+            return res.status(401).json({message:"Task not found"})
+        }
+        const project=await Project.findById(task.project._id);
+        if(!project){
+            return res.status(401).json({message:"Project not found"})
+        }
+        const ismember=project.members.some((m)=>m.user.toString()===req.user._id.toString());
+        if(!ismember){
+            return res.status(401).json({message:"member not found"})
+        }
+
+        const oldstatus=task.status;
+        // Debug log
+        console.log('Updating status:', { taskid, oldstatus, newstatus: status });
+        task.status=status;
+        await task.save();
+        //record activity (optional)
+        try {
+          const activity=await recordActivity({
+              userid:req.user.id,
+              action:"updated_task_status",
+              resourceType:"Task",
+              details:{
+                  oldstatus,
+                  newstatus:status
+              },
+              resourceid:task._id
+          });
+        } catch (activityError) {
+          console.error('Activity log error:', activityError);
+        }
+        res.status(200).json({message:"task status updated",task,project});
+    }
+    catch (error) {
+        console.error('Update task status error:', error);
+        res.status(500).json({message:"Internal server error"});
+    }
 };

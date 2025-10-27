@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTask, getTaskDetails, updateTaskDescription, updateTasktitle } from '../controllers/taskcontoller.js';
+import { createTask, getTaskDetails, updateTaskDescription, updateTaskStatus, updateTasktitle } from '../controllers/taskcontoller.js';
 import {authmiddleware} from '../middlewares/authmiddleware.js'
 import { z } from 'zod';
 import { validateRequest } from 'zod-express-middleware';
@@ -18,5 +18,8 @@ router.put('/:taskid/description', authmiddleware, validateRequest({
   params: z.object({ taskid: z.string() }),
   body: z.object({ description: z.string() })
 }), updateTaskDescription);
-
+router.put('/:taskid/status', authmiddleware, validateRequest({
+    params: z.object({ taskid: z.string() }),
+    body: z.object({ status: z.enum(["To Do", "In Progress", "Done"]) }),
+  }), updateTaskStatus);
 export default router;

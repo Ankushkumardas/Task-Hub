@@ -1,8 +1,8 @@
 export interface User{
     _id:string;
-    name:string;
-    email:string;
-    createdAt:Date;
+    name?:string;
+    email?:string;
+    createdAt?:Date;
     isemailverified?:boolean;
     updatedAt?:Date;
     profilepicture?:string;

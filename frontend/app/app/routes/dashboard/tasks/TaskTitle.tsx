@@ -30,7 +30,6 @@ const TaskTitle = ({ title, taskid }: { title: string; taskid: string }) => {
         <div className="flex items-center gap-3">
             {isediting ? (
                 <Input
-                    className="text-2xl font-bold mb-0 w-auto"
                     value={inputTitle}
                     onChange={(e) => setInputTitle(e.target.value)}
                 />
@@ -39,14 +38,12 @@ const TaskTitle = ({ title, taskid }: { title: string; taskid: string }) => {
             )}
             {isediting ? (
                 <Button
-                    className="h-10 px-4 py-2 text-base font-semibold"
                     onClick={updatetitle}
                 >
                     {isPending ? "Updating" : "Update"}
                 </Button>
             ) : (
                 <Button
-                    className=" text-base font-semibold"
                     onClick={() => setisediting(true)}
                 >
                     Edit
