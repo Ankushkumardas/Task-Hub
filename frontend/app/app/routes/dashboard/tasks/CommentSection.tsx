@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from "date-fns";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -50,7 +51,9 @@ const CommentSection = ({
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-semibold text-sm text-gray-700">{m.author?.name ?? "Unknown"}</span>
-                  <span className="text-xs text-gray-400">{new Date(m.createdAt).toLocaleString()}</span>
+                <span className="text-xs text-gray-400">
+                    {m.createdAt ? formatDistanceToNow(new Date(m.createdAt), { addSuffix: true }) : ""}
+                </span>
                 </div>
                 <p className="text-gray-800">{m.text}</p>
               </div>

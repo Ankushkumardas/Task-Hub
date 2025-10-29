@@ -328,13 +328,11 @@ export const updateTaskPriority = async (req, res) => {
     } catch (activityError) {
       console.error("Activity log error:", activityError);
     }
-    res
-      .status(200)
-      .json({
-        message: "task priority updated",
-        task,
-        priority: task?.priority,
-      });
+    res.status(200).json({
+      message: "task priority updated",
+      task,
+      priority: task?.priority,
+    });
   } catch (error) {
     console.error("Update task priority error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -485,11 +483,14 @@ export const getActivity = async (req, res) => {
 export const getComments = async (req, res) => {
   try {
     const { taskid } = req.params;
-    const comments=await Comment.find({task:taskid}).populate("author","name email")
-    if(!comments){
-      return res.status(401).json({message:"No comments"})
+    const comments = await Comment.find({ task: taskid }).populate(
+      "author",
+      "name email"
+    );
+    if (!comments) {
+      return res.status(401).json({ message: "No comments" });
     }
-    res.status(200).json({ message: "Comments" ,comments});
+    res.status(200).json({ message: "Comments", comments });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internel server error" });
@@ -529,5 +530,108 @@ export const addComments = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internel server error" });
+  }
+};
+
+export const watchtask = async (req, res) => {
+  try {
+    const { taskid } = req.params;
+    const task = await Task.findById(taskid);
+    if (!task) {
+      return res.status(401).json({ message: "No task" });
+    }
+    const project = await Project.findById(task.project);
+    if (!project) {
+      return res.status(401).json({ message: "No project" });
+    }
+    const ismember = project.members.some(
+      (m) => m.user.toString() === req.user._id.toString()
+    );
+    if (!ismember) {
+      return res.status(401).json({ message: "No member" });
+    }
+    const iswatching = task.watchers.find(
+      (watcher) => watcher.toString() === req.user._id.toString()
+    );
+    if (!iswatching) {
+      task.watchers.push(req.user._id);
+    } else {
+      task.watchers = task.watchers.filter(
+        (watcher) => watcher.toString() !== req.user._id.toString()
+      );
+    }
+    await task.save();
+    //record activity (optional)
+    try {
+      const activity = await recordActivity({
+        userid: req.user.id,
+        action: "updated_task_watch",
+        resourceType: "Task",
+        details: {
+          watching: !iswatching,
+        },
+        resourceid: task._id,
+      });
+    } catch (activityError) {
+      console.error("Activity log error:", activityError);
+    }
+    res.status(200).json({ message: "Watch updated", task });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const archieveTask = async (req, res) => {
+  try {
+    const { taskid } = req.params;
+    // find the task by id
+    const task = await Task.findById(taskid);
+    if (!task) {
+      return res.status(404).json({ message: "No task" });
+    }
+    const project = await Project.findById(task.project);
+    if (!project) {
+      return res.status(401).json({ message: "No project" });
+    }
+    const ismember = project.members.some(
+      (m) => m.user.toString() === req.user._id.toString()
+    );
+    if (!ismember) {
+      return res.status(401).json({ message: "No member" });
+    }
+    // toggle canonical `isArchieved` field
+    const isArchieved = task.isArchieved ?? false;
+    task.isArchieved = !isArchieved;
+    await task.save();
+    // optional: record activity
+    try {
+      await recordActivity({
+        userid: req.user.id,
+        action: task.isArchieved ? "archived_task" : "unarchived_task",
+        resourceType: "Task",
+        details: { taskId: task._id },
+        resourceid: task._id,
+      });
+    } catch (activityError) {
+      console.error("Activity log error:", activityError);
+    }
+    res.status(200).json({ message: "Task archieve status updated", task, status: task.isArchieved ? "archived" : "unarchived" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getmytasks = async (req, res) => {
+  try {
+    const userid = req.user._id;
+    const tasks = await Task.find({ assignees: { $in: [userid] }})
+      .populate('project')
+      .populate('createdBy');
+    res.status(200).json({ message: "My tasks", tasks });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

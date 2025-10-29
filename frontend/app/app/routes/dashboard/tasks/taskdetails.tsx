@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router";
-import { useTaskQuery } from "~/hooks/useTask";
+import { useArchieveTaskMutation, useTaskQuery, useWatchersMutation } from "~/hooks/useTask";
 import TaskTitle from "./TaskTitle";
 import { Button } from "~/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -19,7 +19,16 @@ const TaskDetails = () => {
   const { taskid, projectid, workspaceid } = useParams();
   const navigate = useNavigate();
   const { data, isLoading } = useTaskQuery(taskid as string);
-  // console.log(data)
+  const { mutate: watchTask, isPending: watchPending } = useWatchersMutation();
+  const {mutate: archieveTask, isPending: archievePending} = useArchieveTaskMutation();
+  const handlewatchtask = () => {
+    if (watchPending) return;
+    watchTask({ taskid: taskid as string });
+  };
+  const handlearchivetask = () => {
+    if (archievePending) return;
+    archieveTask({ taskid: taskid as string });
+  };
   if (isLoading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-white">
@@ -48,10 +57,10 @@ const TaskDetails = () => {
     >
       <div className="flex items-center justify-between mb-8">
         <Button
-          onClick={() => {}}
+          onClick={handlewatchtask}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold shadow transition"
         >
-          {data.task.watchers ? (
+          {data.task.watchers && data.task.watchers.length > 0 ? (
             <>
               <EyeOff className="w-5 h-5" />
               <span>UnWatch</span>
@@ -118,11 +127,11 @@ const TaskDetails = () => {
           </div>
           <div>
             <span className="font-semibold text-gray-600">Comments:</span>
-            <CommentSection taskid={taskid as string} members={data?.project?.members}/>
+            <CommentSection taskid={taskid as string} members={data?.project?.members} />
           </div>
           <div>
             <span className="font-semibold text-gray-600">Watchers:</span>
-            <Watchers watchers={data.task?.watcher || []} />
+            <Watchers watchers={data.task?.watchers || []} />
           </div>
         </div>
 
@@ -180,10 +189,10 @@ const TaskDetails = () => {
             </div>
           </div>
           <Button
-            onClick={() => {}}
+            onClick={handlearchivetask}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 font-semibold shadow transition"
           >
-            {data.task.isArchieve ? (
+            {data.task.isArchieved ? (
               <>
                 <EyeOff className="w-5 h-5" />
                 <span>UnArchive</span>

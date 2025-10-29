@@ -72,7 +72,7 @@ const DashboardLayout = () => {
           <div className=" mx-auto container px-2 sm:px-2 lg:px-4 py-0 md:py-4 w-full h-full">
             <Outlet />
           </div>
-        </main>
+        </main> 
       </div>
       <CreateWorkspace
         iscreatingworkspace={iscreatingworkspace}

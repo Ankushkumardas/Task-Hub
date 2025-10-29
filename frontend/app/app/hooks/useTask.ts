@@ -108,7 +108,6 @@ export const useUpdateSubtaskOfTask=()=>{
     })
 }
 
-
 export const useAddComments = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -130,5 +129,38 @@ export const useGetComments=(taskid:string)=>{
     return useQuery({
         queryKey:["comments",taskid],
         queryFn:()=>fetchdata(`/tasks/${taskid}/comments`)
+    })
+}
+
+export const useWatchersMutation=()=>{
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(data:{taskid:string})=>postdata(`/tasks/${data.taskid}/watch`,{}),
+        onSuccess: (result: any, variables: { taskid: string }) => {
+            queryClient.invalidateQueries({ queryKey: ["task", variables.taskid] });
+        }
+    })
+}
+
+export const useArchieveTaskMutation=()=>{
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn:(data:{taskid:string})=>postdata(`/tasks/${data.taskid}/archieve`,{}),
+        onSuccess: (result: any, variables: { taskid: string }) => {
+            queryClient.invalidateQueries({ queryKey: ["task", variables.taskid] });
+            queryClient.invalidateQueries({ queryKey: ["project", result.projectid] });
+        }
+    })
+}
+
+export const useGetMytasks=()=>{
+    return useQuery({
+        queryKey:["my-tasks"],
+        // map the API response to return the tasks array directly so callers
+        // can treat `data` as an array (avoid `data?.tasks` everywhere)
+        queryFn:async()=>{
+            const res = await fetchdata('/tasks/my-tasks');
+            return res?.tasks ?? [];
+        }
     })
 }

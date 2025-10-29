@@ -35,18 +35,26 @@ const WorkspaceDetails = () => {
     return <div>Error loading workspace: {error?.message || "Unknown error"}</div>;
   }
 
+  if (!workspace) {
+    return (
+      <div className=" h-screen flex items-center justify-center font-semibold text-lg">
+        Workspace data not available
+      </div>
+    );
+  }
+
   return (
     <div>
      <WorkspaceHeader
-     workspace={data?.workspace}
-     members={data?.workspace?.members}
+  workspace={workspace}
+  members={workspace?.members}
      iscreatedproject={()=>setiscreatedproject(true)}
      isInviteMember={()=>setisInviteMember(true)}
      />
 
      <ProjectList
-     workspaceid={workspace._id}
-     project={data?.projects}
+  workspaceid={workspace?._id}
+  project={data?.projects}
      onCreateproject={()=>setiscreatedproject(true)}
      />
 
@@ -54,7 +62,7 @@ const WorkspaceDetails = () => {
      isopen={iscreatedproject}
      opopnechange={setiscreatedproject}
      workspaceid={workspaceid}
-     workspaceMembers={workspace.members as any}
+  workspaceMembers={workspace?.members as any}
      />
     </div>
   );

@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import WorkspaceAvatar from "../workspace/workspaceavatar";
 
 interface HeaderProps {
@@ -32,6 +32,14 @@ const Header = ({
   const { user} = useAuth();
 //load data before the ui loads using clientLoader from dashboard.tsx clientLoader-->useLoader
   const {workspaces}=useLoaderData() as any;
+  // console.log(workspaces)
+  
+  const navigate=useNavigate();
+
+  const handleonclick = (workspace: Workspace) => {
+    onworkspaceselected(workspace);
+    navigate(`/dashboard?workspaceid=${workspace._id}`);
+  }
     return (
     <div className="sticky top-0 z-40 border-b border-slate-200 shadow-xs p-2">
       <div className=" flex items-center justify-between sm:px-2 lg:px-4 py-0 md:px-3">
@@ -63,7 +71,7 @@ const Header = ({
               {workspaces?.worskspaces?.map((workspace:any) => (
                 <DropdownMenuItem
                   key={workspace._id}
-                  onClick={() => onworkspaceselected(workspace)} className="flex gap-1 space-y-1 mt-1 pl-2"
+                  onClick={() => handleonclick(workspace)} className="flex gap-1 space-y-1 mt-1 pl-2"
                 >
                   {workspace.color && (
                     <WorkspaceAvatar

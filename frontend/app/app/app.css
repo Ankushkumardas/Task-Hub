@@ -27,7 +27,6 @@
   animation: fade-in 0.5s ease-in-out;
 }
 
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

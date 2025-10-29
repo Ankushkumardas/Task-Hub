@@ -1,5 +1,5 @@
 import express from 'express';
-import { addComments, addSubtaskToTask, createTask, getActivity, getComments, getTaskDetails, updatesubtask, updateTaskAssignee, updateTaskDescription, updateTaskPriority, updateTaskStatus, updateTasktitle } from '../controllers/taskcontoller.js';
+import { addComments, addSubtaskToTask, archieveTask, createTask, getActivity, getComments, getmytasks, getTaskDetails, updatesubtask, updateTaskAssignee, updateTaskDescription, updateTaskPriority, updateTaskStatus, updateTasktitle, watchtask } from '../controllers/taskcontoller.js';
 import {authmiddleware} from '../middlewares/authmiddleware.js'
 import { z } from 'zod';
 import { validateRequest } from 'zod-express-middleware';
@@ -8,7 +8,13 @@ import { taskSchema } from '../libs/validateschema.js';
 const router=express.Router();
 
 router.post('/:projectid/create-task',authmiddleware,validateRequest({params:z.object({projectid:z.string()}),body:taskSchema}),createTask)
+
+// define `my-tasks` before the generic `:taskid` route so the literal path
+// doesn't get captured as a task id (which causes CastError)
+router.get('/my-tasks',authmiddleware,getmytasks);
+
 router.get('/:taskid',authmiddleware,validateRequest({params:z.object({taskid:z.string()})}),getTaskDetails)
+
 router.put('/:taskid/title', authmiddleware, validateRequest({
   params: z.object({ taskid: z.string() }),
   body: z.object({ title: z.string() })
@@ -52,4 +58,10 @@ router.put('/:taskid/status', authmiddleware, validateRequest({
       params: z.object({ taskid: z.string() }),
       body: z.object({ text: z.string() })
     }),addComments);
+
+    router.post('/:taskid/watch',authmiddleware,validateRequest({params:z.object({taskid:z.string()})}),watchtask);
+
+    router.post('/:taskid/archieve',authmiddleware,validateRequest({params:z.object({taskid:z.string()})}),archieveTask);
+
+  // mytasks (moved earlier to avoid route collision with :taskid)
 export default router;
