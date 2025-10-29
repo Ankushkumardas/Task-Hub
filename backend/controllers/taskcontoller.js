@@ -2,6 +2,7 @@ import Project from "../models/projects.js";
 import Workspace from "../models/workspace.js";
 import Task from "../models/task.js";
 import Activity from "../models/activity.js";
+import Comment from "../models/comment.js";
 export const createTask = async (req, res) => {
   try {
     const { projectid } = req.params;
@@ -81,7 +82,9 @@ export const getTaskDetails = async (req, res) => {
       ...st,
       completed: st.completed ?? st.comleted ?? st.isCompleted ?? false,
     }));
-    return res.status(200).json({ message: "Task details", task: taskObj, project });
+    return res
+      .status(200)
+      .json({ message: "Task details", task: taskObj, project });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -289,13 +292,11 @@ async function recordActivity({
   return activity;
 }
 
-
 export const updateTaskPriority = async (req, res) => {
   try {
     const { taskid } = req.params;
     const { priority } = req.body;
-    const task = await
-        Task.findById(taskid);  
+    const task = await Task.findById(taskid);
     if (!task) {
       return res.status(401).json({ message: "Task not found" });
     }
@@ -307,32 +308,37 @@ export const updateTaskPriority = async (req, res) => {
       (m) => m.user.toString() === req.user._id.toString()
     );
     if (!ismember) {
-        return res.status(401).json({ message: "member not found" });
+      return res.status(401).json({ message: "member not found" });
     }
     const oldpriority = task.priority;
     task.priority = priority;
     await task.save();
     //record activity (optional)
     try {
-        await recordActivity({
+      await recordActivity({
         userid: req.user.id,
         action: "updated_task_priority",
         resourceType: "Task",
         details: {
-            oldpriority,
-            newpriority: priority,
+          oldpriority,
+          newpriority: priority,
         },
         resourceid: task._id,
-        });
+      });
+    } catch (activityError) {
+      console.error("Activity log error:", activityError);
     }
-    catch (activityError) {
-        console.error("Activity log error:", activityError);
-    }
-    res.status(200).json({ message: "task priority updated", task, priority: task?.priority });
+    res
+      .status(200)
+      .json({
+        message: "task priority updated",
+        task,
+        priority: task?.priority,
+      });
   } catch (error) {
     console.error("Update task priority error:", error);
     res.status(500).json({ message: "Internal server error" });
-  } 
+  }
 };
 
 export const addSubtaskToTask = async (req, res) => {
@@ -342,7 +348,7 @@ export const addSubtaskToTask = async (req, res) => {
     const task = await Task.findById(taskid);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
-    }   
+    }
     const project = await Project.findById(task.project);
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -351,7 +357,9 @@ export const addSubtaskToTask = async (req, res) => {
       (m) => m.user.toString() === req.user._id.toString()
     );
     if (!ismember) {
-      return res.status(403).json({ message: "You are not a member of this project" });
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this project" });
     }
     // normalize subtask fields: support existing variants and new `completed` field
     const newSubtask = {
@@ -363,7 +371,7 @@ export const addSubtaskToTask = async (req, res) => {
     };
     task.subtasks.push(newSubtask);
     await task.save();
-//recorrd activity (optional)
+    //recorrd activity (optional)
     try {
       await recordActivity({
         userid: req.user.id,
@@ -376,8 +384,8 @@ export const addSubtaskToTask = async (req, res) => {
         resourceid: task._id,
       });
     } catch (activityError) {
-        console.error("Activity log error:", activityError);
-    };
+      console.error("Activity log error:", activityError);
+    }
 
     // return a normalized subtask shape (use `completed` as canonical)
     const returned = { ...newSubtask, completed: false };
@@ -388,13 +396,12 @@ export const addSubtaskToTask = async (req, res) => {
   }
 };
 
-export const updatesubtask=async (req,res)=>{
+export const updatesubtask = async (req, res) => {
   try {
     const { taskid, subtaskid } = req.params;
     // accept `completed` from client (this matches route validation)
     const { title, completed } = req.body;
-    const
-        task = await Task.findById(taskid); 
+    const task = await Task.findById(taskid);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
@@ -402,37 +409,39 @@ export const updatesubtask=async (req,res)=>{
     if (!subtask) {
       return res.status(404).json({ message: "Subtask not found" });
     }
-  subtask.title = title;
-  // normalize and persist the boolean across possible field names
-  subtask.comleted = completed;
-  subtask.isCompleted = completed;
-  subtask.completed = completed;
+    subtask.title = title;
+    // normalize and persist the boolean across possible field names
+    subtask.comleted = completed;
+    subtask.isCompleted = completed;
+    subtask.completed = completed;
     await task.save();
     //record activity (optional)
     try {
-        await recordActivity({
+      await recordActivity({
         userid: req.user.id,
         action: "updated_suntask",
         resourceType: "Subtask",
         details: {
-            subtaskid,
-            title,
-            isCompleted,
+          subtaskid,
+          title,
+          isCompleted,
         },
         resourceid: task._id,
-        });
+      });
+    } catch (activityError) {
+      console.error("Activity log error:", activityError);
     }
-    catch (activityError) {
-        console.error("Activity log error:", activityError);
-    };
 
     // normalize response to include `completed` boolean
-    const respSubtask = Object.assign({}, subtask.toObject ? subtask.toObject() : subtask, {
-      completed: completed,
-    });
+    const respSubtask = Object.assign(
+      {},
+      subtask.toObject ? subtask.toObject() : subtask,
+      {
+        completed: completed,
+      }
+    );
     res.status(200).json({ message: "Subtask updated", subtask: respSubtask });
-  }
-    catch (error) {
+  } catch (error) {
     console.error("Update subtask error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -444,7 +453,7 @@ export const deleteSubtask = async (req, res) => {
     const task = await Task.findById(taskid);
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
-    }   
+    }
     const subtask = task.subtasks.id(subtaskid);
     if (!subtask) {
       return res.status(404).json({ message: "Subtask not found" });
@@ -452,9 +461,73 @@ export const deleteSubtask = async (req, res) => {
     subtask.remove();
     await task.save();
     res.status(200).json({ message: "Subtask deleted" });
-  }
-    catch (error) {
+  } catch (error) {
     console.error("Delete subtask error:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getActivity = async (req, res) => {
+  try {
+    const { resourceid } = req.params;
+    // find activities for the given resourceId (task/project/etc.)
+    const activity = await Activity.find({ resourceId: resourceid })
+      .populate("user", "name email profilePicture")
+      .sort({ createdAt: -1 });
+    // return empty array if none found
+    res.status(200).json({ message: "Activity details", activity });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internel server error" });
+  }
+};
+
+export const getComments = async (req, res) => {
+  try {
+    const { taskid } = req.params;
+    const comments=await Comment.find({task:taskid}).populate("author","name email")
+    if(!comments){
+      return res.status(401).json({message:"No comments"})
+    }
+    res.status(200).json({ message: "Comments" ,comments});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internel server error" });
+  }
+};
+
+export const addComments = async (req, res) => {
+  try {
+    const { taskid } = req.params;
+    const { text } = req.body;
+    const task = await Task.findById(taskid);
+    if (!task) {
+      return res.status(401).json({ message: "No task" });
+    }
+    const project = await Project.findById(task.project);
+    if (!project) {
+      return res.status(401).json({ message: "No project" });
+    }
+    const ismember = project.members.some(
+      (m) => m.user.toString() === req.user._id.toString()
+    );
+    if (!ismember) {
+      return res.status(401).json({ message: "No member" });
+    }
+    const newcomment = await Comment.create({
+      text,
+      task: taskid,
+      author: req.user._id,
+      // mentions: [],
+      // reactions: [],
+      // attachments: [],
+    });
+
+    task.comments.push(newcomment._id);
+    await task.save();
+    res.status(200).json({ message: "Comments", newcomment });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internel server error" });
   }
 };

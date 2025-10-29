@@ -55,7 +55,11 @@ const ProjectDetails = () => {
           </Button>
           <h1 className="text-2xl font-semibold">{project.title}</h1>
           {project.description && (
-            <p className="text-gray-600 mt-1">{project.description}</p>
+            <div className=" flex space-x-2 items-center">
+            <p className="text-gray-800 font-semibold"> Desctiption: 
+            </p>
+            <span className=" text-slate-600 font-medium">{project.description}</span>
+            </div>
           )}
         </div>
 

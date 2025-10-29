@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import type { User } from '~/types'
 
 const Watchers = ({watchers}:{watchers:User[]}) => {
-    console.log(watchers)
+    // console.log(watchers)
   return (
     <div>
       <h1 className=' text-slate-700 font-semibold'>Watchers:</h1>
@@ -19,7 +19,7 @@ const Watchers = ({watchers}:{watchers:User[]}) => {
                     </Avatar>
                 </div>
             ))
-        ):(<p>No Watchers</p>
+        ):(<p className=' px-2 py-1 border w-50 shadow  rounded-md'>No Watchers</p>
         )}
       </div>
     </div>

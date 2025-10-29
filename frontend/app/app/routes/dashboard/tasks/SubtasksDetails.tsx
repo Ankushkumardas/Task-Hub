@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { useAddSubtaskToTask, useUpdateSubtaskOfTask } from "~/hooks/useTask";
 import type { TaskSubtask } from "~/types";
 
@@ -121,20 +122,22 @@ const SubtasksDetails = ({
         {newsubtasks.length === 0 ? (
           <p className="text-gray-500 text-center mt-4">No subtasks available.</p>
         ) : (
+          <ScrollArea className=" h-[200px]">
+
           <div className="space-y-2">
             {newsubtasks.map((item) => {
               const isEditing = editingSubtaskId === item._id;
               return (
                 <div
-                  key={item._id}
-                  className="flex items-center gap-2 bg-gray-50 rounded px-3 py-2"
+                key={item._id}
+                className="flex items-center gap-2 bg-gray-50 rounded px-3 py-2"
                 >
                   <input
                     type="checkbox"
                     checked={item.completed}
                     onChange={(e) => handletoggletask(e.target.checked, item._id)}
                     className="accent-primary"
-                  />
+                    />
                   {isEditing ? (
                     <>
                       <Input
@@ -142,7 +145,7 @@ const SubtasksDetails = ({
                         onChange={(e) => setEditTitle(e.target.value)}
                         className="flex-1"
                         autoFocus
-                      />
+                        />
                       <Button size="sm" onClick={() => handleSave(item)}>
                         Save
                       </Button>
@@ -150,7 +153,7 @@ const SubtasksDetails = ({
                         size="sm"
                         variant="ghost"
                         onClick={() => setEditingSubtaskId(null)}
-                      >
+                        >
                         Cancel
                       </Button>
                     </>
@@ -159,8 +162,8 @@ const SubtasksDetails = ({
                       <span
                         className={`flex-1 truncate ${
                           item.completed ? "line-through text-gray-400" : ""
-                        }`}
-                      >
+                          }`}
+                          >
                         {item.title}
                       </span>
                       <Button size="sm" variant="ghost" onClick={() => handleEdit(item)}>
@@ -172,6 +175,7 @@ const SubtasksDetails = ({
               );
             })}
           </div>
+            </ScrollArea>
         )}
       </div>
     </>
