@@ -78,7 +78,7 @@ const TaskList = () => {
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="all">All Tasks</SelectItem>
             <SelectItem value="To Do">To Do</SelectItem>
             <SelectItem value="In Progress">In Progress</SelectItem>
             <SelectItem value="Done">Done</SelectItem>
