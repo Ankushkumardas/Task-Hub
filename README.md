@@ -58,5 +58,4 @@ TaskHub is a modern, responsive **Project Management Dashboard** application bui
 
 ---
 
-## **Folder Structure**
 
