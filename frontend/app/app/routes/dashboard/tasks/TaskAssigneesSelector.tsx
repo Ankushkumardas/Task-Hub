@@ -16,7 +16,6 @@ const TaskAssigneesSelector = ({
   task: Task;
   projectmember: { user: User; role: ProjectMember }[];
 }) => {
-  console.log(assignees);
   const [selectedid, setselectedid] = React.useState<string[]>(
     assignees.map((a) => a._id)
   );

@@ -11,6 +11,8 @@ import TaskDescription from "./TaskDescription";
 import TaskAssigneesSelector from "./TaskAssigneesSelector";
 import TaskPriority from "./TaskPriority";
 import SubtasksDetails from "./SubtasksDetails";
+import Watchers from "./watchers";
+import Activity from "./Activity";
 
 const TaskDetails = () => {
   const { taskid, projectid, workspaceid } = useParams();
@@ -134,6 +136,10 @@ const TaskDetails = () => {
           ) : (
         <span className="text-gray-400 ml-2">No comments</span>
           )}
+        </div>
+        {/* watchers */}
+        <div>
+          <Watchers watchers={data.task?.watcher||[]}/>
         </div>
         {/* Project */}
         <div>
@@ -280,6 +286,11 @@ const TaskDetails = () => {
           </div>
           {/* Add more info blocks here if needed */}
         </div>
+      </div>
+
+      {/* Activity */}
+      <div>
+            <Activity resourceid={data?.task?._id}/>
       </div>
       </div>
     </motion.div>

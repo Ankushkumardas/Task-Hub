@@ -368,7 +368,7 @@ export const addSubtaskToTask = async (req, res) => {
       await recordActivity({
         userid: req.user.id,
         action: "created_suntask",
-        resourceType: "Suntask",
+        resourceType: "Subtask",
         details: {
           title,
           taskId: task._id,
@@ -413,7 +413,7 @@ export const updatesubtask=async (req,res)=>{
         await recordActivity({
         userid: req.user.id,
         action: "updated_suntask",
-        resourceType: "Suntask",
+        resourceType: "Subtask",
         details: {
             subtaskid,
             title,

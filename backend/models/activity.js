@@ -35,7 +35,7 @@ const activitySchema = new mongoose.Schema(
       required: true,
       enum: [
         "Task",
-        "Suntask",
+        "Subtask",
         "Project",
         "Workspace",
         "Comment",
