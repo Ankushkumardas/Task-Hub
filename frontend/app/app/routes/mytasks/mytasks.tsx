@@ -89,20 +89,20 @@ const TaskList = () => {
           placeholder="Search tasks..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-[200px]"
+          className="w-[200px] px-2 py-2 h-9"
         />
       </div>
 
       {/* Task cards */}
       <div className="flex flex-wrap gap-4 items-center ">
         {sortedTasks.map((task) => (
-          <Card key={task._id} className="max-w-[260px] max-h-[170px]">
+          <Card key={task._id} className="max-w-[280px] max-h-[170px]">
             <CardHeader>
               <CardTitle className="text-lg font-medium">Title: 
                 <span className=" text-slate-700 font-semibold">{task.title}</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 -mt-5">
+            <CardContent className="space-y-2 -mt-6">
               <p className="text-sm text-muted-foreground">Description: 
                 {task.description.length > 50
                   ? task.description.slice(0, 50) + "..."
