@@ -65,7 +65,7 @@ const DashboardLayout = () => {
             onworkspaceselected={handleworkspaceselected}
             selectedworkspace={currentworkspace}
             oncreatedworkspace={() => setiscreatingworkspace(true)}
-            logout={logout ? () => { logout(); } : () => {}}
+            logout={logout ?? (() => {})}
           />
         )}
         <main className=" flex-1 overflow-y-auto px-4 h-full w-full">

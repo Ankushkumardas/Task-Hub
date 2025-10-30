@@ -80,6 +80,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setisAuthenticated(false);
     //clear all caache
     queryClient.clear();
+    // navigate to login explicitly after logout to avoid intermediate render glitches
+    try {
+      navigate('/login', { replace: true });
+    } catch (e) {
+      // ignore navigation errors in non-router contexts
+    }
   };
 
   return (

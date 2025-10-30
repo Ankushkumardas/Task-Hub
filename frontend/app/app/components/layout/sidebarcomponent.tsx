@@ -20,7 +20,7 @@ const SidebarComponent = ({
     { title: "Workspace", href: "/workspaces", icon: <IoSettingsOutline size={16}/>},
     { title: "My Tasks", href: "/my-tasks", icon: <IoSettingsOutline size={16}/>},
     { title: "Members", href: "/members", icon: <IoSettingsOutline size={16}/> },
-    { title: "Archieved", href: "/archieved", icon: <IoSettingsOutline size={16}/> },
+    { title: "Archieve", href: "/archieve", icon: <IoSettingsOutline size={16}/> },
     { title: "Settings", href: "/settings", icon: <IoSettingsOutline size={16}/> },
   ];
 

@@ -156,8 +156,6 @@ export const useArchieveTaskMutation=()=>{
 export const useGetMytasks=()=>{
     return useQuery({
         queryKey:["my-tasks"],
-        // map the API response to return the tasks array directly so callers
-        // can treat `data` as an array (avoid `data?.tasks` everywhere)
         queryFn:async()=>{
             const res = await fetchdata('/tasks/my-tasks');
             return res?.tasks ?? [];

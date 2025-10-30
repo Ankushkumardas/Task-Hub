@@ -1,4 +1,6 @@
+import { populate } from "dotenv";
 import Project from "../models/projects.js";
+import Task from "../models/task.js";
 import Workspace from "../models/workspace.js";
 
 export const createWorkspace = async (req, res) => {
@@ -43,7 +45,7 @@ export const getWorkspace = async (req, res) => {
     const { worspaceid } = req.params;
     const workspace = await Workspace.findById(worspaceid).populate(
       "members.user",
-      "name email"
+      "name email role"
     );
     if (!workspace) {
       return res.status(404).json({ message: "Workspace not found" });
@@ -77,6 +79,50 @@ export const getWorkspaceProjects = async (req, res) => {
       .json({ message: "workspace Projects", projects, workspace });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const workspaceMembers = async (req, res) => {
+  try {
+    const { workspaceid } = req.params;
+    const workspace = await Workspace.findById(workspaceid).populate(
+      "members.user",
+      "name email role profilePicture"
+    );
+    if (!workspace) {
+      return res.status(404).json({ message: "Workspace not found" });
+    }
+    // authorization: allow if the requester is the owner or a member
+    const userId = req.user && (req.user._id ? req.user._id.toString() : req.user.toString());
+    const isOwner = workspace.owner && workspace.owner.toString() === userId;
+    const isMember = workspace.members.some((member) => {
+      // member.user may be populated (object) or ObjectId (string)
+      const memberUser = member.user && (member.user._id ? member.user._id.toString() : member.user.toString());
+      return memberUser === userId;
+    });
+    if (!isOwner && !isMember) {
+      return res.status(403).json({ message: "You are not a member of this workspace" });
+    }
+    res.status(200).json({ message: "Workspace members", members: workspace.members });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getArchievedProjects = async (req, res) => {
+  try {
+    const { workspaceid } = req.params;
+    const workspace = await Workspace.findById(workspaceid).populate({ path: "projects", populate: { path: "tasks", match: { isArchieved: true },populate:{
+      path:"assignees", select:"name email role profilePicture"
+    } } });
+    if (!workspace) {
+      return res.status(404).json({ message: "Workspace not found" });
+    }
+    res.status(200).json({ message: "Archieved projects", workspace });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
