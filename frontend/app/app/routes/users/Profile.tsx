@@ -5,8 +5,14 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import z from 'zod'
 import { useAuth } from '~/components/provider/authcontext';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { usechangePasswordmutation, useUpdateProfilemutation, useUserProfileQuery } from '~/hooks/use-profile';
-
+import {motion} from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Badge } from '~/components/ui/badge';
+import { Separator } from '~/components/ui/separator';
+import { Input } from '~/components/ui/input';
+import { Button } from '~/components/ui/button';
 const changePassword=z.object({
   currentpassword:z.string().min(4,'Password must be at least 4 characters long'),
   newpassword:z.string().min(4,'Password must be at least 4 characters long'),
@@ -28,7 +34,7 @@ const Profile = () => {
     const {data:user,isLoading,isError}=useUserProfileQuery();
     const {logout}=useAuth();
     const  navigate=useNavigate();
-
+    console.log(user);
     const form=useForm<ChangePasswordSchema>({
         resolver:zodResolver(changePassword),
         defaultValues:{
@@ -85,156 +91,164 @@ const Profile = () => {
           } 
         })
     }
-
+    if(isLoading) return <div>Loading...</div>
+    if(isError) return <div>Error in loading profile</div>
+    if(!user) return <div>No user data found</div>
   return (
-    <div className="profile-page">
-      <style>
-        {`
-          .profile-page {
-            max-width: 400px;
-            margin: 40px auto;
-            padding: 32px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            font-family: 'Segoe UI', Arial, sans-serif;
-          }
-          .profile-page h2, .profile-page h3 {
-            text-align: center;
-            margin-bottom: 18px;
-            color: #333;
-          }
-          .profile-page form {
-            margin-bottom: 28px;
-          }
-          .profile-page label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #444;
-          }
-          .profile-page input {
-            width: 100%;
-            padding: 8px 10px;
-            margin-bottom: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 15px;
-            transition: border-color 0.2s;
-          }
-          .profile-page input:focus {
-            border-color: #0078d4;
-            outline: none;
-          }
-          .profile-page button {
-            background: #0078d4;
-            color: #fff;
-            border: none;
-            padding: 10px 0;
-            border-radius: 6px;
-            width: 100%;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-          }
-          .profile-page button:hover {
-            background: #005fa3;
-          }
-          .profile-page span {
-            color: #d32f2f;
-            font-size: 13px;
-            margin-bottom: 6px;
-            display: block;
-          }
-          .profile-page div {
-            margin-bottom: 16px;
-          }
-        `}
-      </style>
-      <h2>Profile</h2>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : isError ? (
-        <p>Error loading profile.</p>
-      ) : (
-        <form onSubmit={profileForm.handleSubmit(handleProfileSubmit)}>
-          <div>
-            <label>Name:</label>
-            <input
-              {...profileForm.register('name')}
-              type="text"
-              placeholder="Name"
-            />
-            {profileForm.formState.errors.name && (
-              <span>{profileForm.formState.errors.name.message}</span>
-            )}
-          </div>
-          <div>
-            <label>Email:</label>
-            <input
-              {...profileForm.register('email')}
-              type="email"
-              placeholder="Email"
-            />
-            {profileForm.formState.errors.email && (
-              <span>{profileForm.formState.errors.email.message}</span>
-            )}
-          </div>
-          <div>
-            <label>Profile Picture URL:</label>
-            <input
-              {...profileForm.register('profilePicture')}
-              type="url"
-              placeholder="Profile Picture URL"
-            />
-            {profileForm.formState.errors.profilePicture && (
-              <span>{profileForm.formState.errors.profilePicture.message}</span>
-            )}
-          </div>
-          <button type="submit">Update Profile</button>
-        </form>
-      )}
+   <motion.div
+      className="max-w-3xl mx-auto p-6 sm:p-10"
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="flex justify-center mb-6">
+          <TabsTrigger value="profile">Profile Info</TabsTrigger>
+          <TabsTrigger value="update">Update Profile</TabsTrigger>
+          <TabsTrigger value="password">Change Password</TabsTrigger>
+        </TabsList>
 
-      <h3>Change Password</h3>
-      <form onSubmit={form.handleSubmit(handleChangePasswordSubmit)}>
-        <div>
-          <label>Current Password:</label>
-          <input
-            {...form.register('currentpassword')}
-            type="password"
-            placeholder="Current Password"
-          />
-          {form.formState.errors.currentpassword && (
-            <span>{form.formState.errors.currentpassword.message}</span>
-          )}
-        </div>
-        <div>
-          <label>New Password:</label>
-          <input
-            {...form.register('newpassword')}
-            type="password"
-            placeholder="New Password"
-          />
-          {form.formState.errors.newpassword && (
-            <span>{form.formState.errors.newpassword.message}</span>
-          )}
-        </div>
-        <div>
-          <label>Confirm New Password:</label>
-          <input
-            {...form.register('confirmpassword')}
-            type="password"
-            placeholder="Confirm New Password"
-          />
-          {form.formState.errors.confirmpassword && (
-            <span>{form.formState.errors.confirmpassword.message}</span>
-          )}
-        </div>
-        <button type="submit">Change Password</button>
-      </form>
-    </div>
+        {/* --- Profile Info --- */}
+        <TabsContent value="profile">
+          <Card className="shadow-lg rounded-2xl border border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-center text-2xl font-bold text-gray-800">
+                Profile Overview
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between">
+                <span className="font-medium">Name:</span>
+                <span>{user.user.name}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row justify-between">
+                <span className="font-medium">Email:</span>
+                <span>{user.user.email}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row justify-between">
+                <span className="font-medium">Email Verified:</span>
+                <Badge
+                  variant={user.user.isemailverified ? "default" : "destructive"}
+                >
+                  {user.user.isemailverified ? "Verified" : "Not Verified"}
+                </Badge>
+              </div>
+              <div className="flex flex-col sm:flex-row justify-between">
+                <span className="font-medium">2FA Enabled:</span>
+                <Badge variant={user.user.is2FAenabled ? "default" : "secondary"}>
+                  {user.user.is2FAenabled ? "Enabled" : "Disabled"}
+                </Badge>
+              </div>
+              <Separator />
+              <div className="flex flex-col sm:flex-row justify-between">
+                <span className="font-medium">Last Login:</span>
+                <span>{new Date(user.user.lastlogin).toLocaleString()}</span>
+              </div>
+              <div className="flex flex-col sm:flex-row justify-between">
+                <span className="font-medium">Account Created:</span>
+                <span>{new Date(user.user.createdAt).toLocaleString()}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* --- Update Profile --- */}
+        <TabsContent value="update">
+          <Card className="shadow-lg rounded-2xl border border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-center text-xl font-semibold text-gray-800">
+                Update Profile
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form
+                onSubmit={profileForm.handleSubmit(handleProfileSubmit)}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <Input
+                    {...profileForm.register("name")}
+                    type="text"
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Email</label>
+                  <Input
+                    {...profileForm.register("email")}
+                    type="email"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">
+                    Profile Picture URL
+                  </label>
+                  <Input
+                    {...profileForm.register("profilePicture")}
+                    type="url"
+                    placeholder="Enter profile picture URL"
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  Update Profile
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* --- Change Password --- */}
+        <TabsContent value="password">
+          <Card className="shadow-lg rounded-2xl border border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-center text-xl font-semibold text-gray-800">
+                Change Password
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form
+                onSubmit={form.handleSubmit(handleChangePasswordSubmit)}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="text-sm font-medium">
+                    Current Password
+                  </label>
+                  <Input
+                    {...form.register("currentpassword")}
+                    type="password"
+                    placeholder="Enter current password"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">New Password</label>
+                  <Input
+                    {...form.register("newpassword")}
+                    type="password"
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">
+                    Confirm Password
+                  </label>
+                  <Input
+                    {...form.register("confirmpassword")}
+                    type="password"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  Change Password
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </motion.div>
   )
 }
 
