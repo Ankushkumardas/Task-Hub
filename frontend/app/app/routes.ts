@@ -11,21 +11,24 @@ export default [
         route('*', './routes/notfound.tsx'), // catch-all route
     ]),
     layout("./routes/dashboard/dashboard.tsx", [
-        route("dashboard", "routes/dashboard/index.tsx"),
-        route("workspaces", "routes/dashboard/workspaces/index.tsx"),
+        route("dashboard", "./routes/dashboard/index.tsx"),
+        route("workspaces", "./routes/dashboard/workspaces/index.tsx"),
         // more specific workspace child routes first so they don't get captured by the
         // parent `workspaces/:workspaceid` route
-        route("workspaces/:workspaceid/projects/:projectid", "routes/dashboard/project/projectDetails.tsx"),
-        route("workspaces/:workspaceid/projects/:projectid/tasks/:taskid", "routes/dashboard/tasks/taskdetails.tsx"),
-        route("workspaces/:workspaceid", "routes/dashboard/workspaces/workspaceDetails.tsx"),
+        route("workspaces/:workspaceid/projects/:projectid", "./routes/dashboard/project/projectDetails.tsx"),
+        route("workspaces/:workspaceid/projects/:projectid/tasks/:taskid", "./routes/dashboard/tasks/taskdetails.tsx"),
+        route("workspaces/:workspaceid", "./routes/dashboard/workspaces/workspaceDetails.tsx"),
         //my-tasks
-        route("my-tasks", "routes/mytasks/mytasks.tsx"),
+        route("my-tasks", "./routes/mytasks/mytasks.tsx"),
         // member 
         // members routes (support multiple URL shapes)
         // shorthand `/members/:workspaceid` links
-        route('workspaces/:workspaceid/members','routes/members/Members.tsx'),
-        route('members/:workspaceid','routes/members/redirect.tsx'),
+        route('workspaces/:workspaceid/members','./routes/members/Members.tsx'),
+        route('members/:workspaceid','./routes/members/redirect.tsx'),
         //archive
-        route("archieve/:workspaceid","routes/archieve/archieve.tsx"),
-    ])
+        route("archieve/:workspaceid","./routes/archieve/archieve.tsx"),
+        //settings
+        route("settings/:workspaceid", "./routes/settings/workspacesettings.tsx"),
+    ]),
+    route("workspace-invite/:workspaceid", "./routes/settings/workspaceInvite.tsx"),
 ] satisfies RouteConfig;

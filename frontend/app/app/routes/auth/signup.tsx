@@ -35,23 +35,21 @@ const Signup = () => {
     },
   });
   const navigate = useNavigate();
-  const { mutate, isPending } = useSignupMutation();
+  const { mutateAsync, } = useSignupMutation();
 
-  const handlesubmit = (data: SignupSchema) => {
-    mutate(data, {
-      onSuccess: (response) => {
-        setTimeout(() => navigate("/verify-email"), 500);
-        if (response?.verificationToken) {
-          toast.info(
-            `Verification token sent to email: ${response?.data?.email}`
-          );
-        }
-      },
-      onError: (error) => {
-        toast.error("Registration Failed");
-        console.log(error);
-      },
-    });
+  const handlesubmit = async (data: SignupSchema) => {
+    try {
+      const response = await mutateAsync(data);
+      setTimeout(() => navigate("/verify-email"), 500);
+      if (response?.verificationToken) {
+        toast.success("Registration successful, verification sent");
+      }
+    } catch (error: any) {
+      // server may return a normalized object (see fetchutil) or a string
+      const msg = (error && (error.message || error.message)) || "Registration Failed";
+      toast.error(msg);
+      console.error("Signup error:", error);
+    }
   };
   return (
     <div className="h-screen w-full flex items-center justify-center ">

@@ -4,6 +4,7 @@ import CreateprojectDialogBox from "~/components/projects/CreateprojectDialogBox
 import ProjectList from "~/components/workspace/projectList";
 import WorkspaceHeader from "~/components/workspace/WorkspaceHeader";
 import { useGetWorkspaceQuery } from "~/hooks/useWorkspace";
+import InviteMemberDialogBox from "~/routes/settings/InviteMemberDialogBox";
 import type { Workspace, Project } from "~/types";
 
 const WorkspaceDetails = () => {
@@ -19,12 +20,14 @@ const WorkspaceDetails = () => {
     );
   }
 
-  const { data, isLoading, isError, error } = useGetWorkspaceQuery(workspaceid as string) as {
+  const { data, isLoading, isError, error } = useGetWorkspaceQuery(
+    workspaceid as string
+  ) as {
     data: { projects: Project[]; workspace: Workspace };
     isLoading: boolean;
     isError: boolean;
     error: any;
-  }
+  };
   const workspace = data?.workspace;
   console.log(data?.projects, "workspace projects");
 
@@ -32,7 +35,9 @@ const WorkspaceDetails = () => {
     return <div>isLoading...</div>;
   }
   if (isError) {
-    return <div>Error loading workspace: {error?.message || "Unknown error"}</div>;
+    return (
+      <div>Error loading workspace: {error?.message || "Unknown error"}</div>
+    );
   }
 
   if (!workspace) {
@@ -45,28 +50,34 @@ const WorkspaceDetails = () => {
 
   return (
     <div>
-     <WorkspaceHeader
-  workspace={workspace}
-  members={workspace?.members}
-     iscreatedproject={()=>setiscreatedproject(true)}
-     isInviteMember={()=>setisInviteMember(true)}
-     />
+      <WorkspaceHeader
+        workspace={workspace}
+        members={workspace?.members}
+        iscreatedproject={() => setiscreatedproject(true)}
+        isInviteMember={() => setisInviteMember(true)}
+      />
 
-     <ProjectList
-  workspaceid={workspace?._id}
-  project={data?.projects}
-     onCreateproject={()=>setiscreatedproject(true)}
-     />
+      <ProjectList
+        workspaceid={workspace?._id}
+        project={data?.projects}
+        onCreateproject={() => setiscreatedproject(true)}
+      />
 
-     <CreateprojectDialogBox
-     isopen={iscreatedproject}
-     opopnechange={setiscreatedproject}
-     workspaceid={workspaceid}
-  workspaceMembers={workspace?.members as any}
-     />
+      <CreateprojectDialogBox
+        isopen={iscreatedproject}
+        opopnechange={setiscreatedproject}
+        workspaceid={workspaceid}
+        workspaceMembers={workspace?.members as any}
+      />
+
+      <InviteMemberDialogBox
+        isopen={isInviteMember}
+        opopnechange={setisInviteMember}
+        workspaceMembers={workspace?.members as any}
+        workspaceid={workspaceid}
+      />
     </div>
   );
 };
 
 export default WorkspaceDetails;
-

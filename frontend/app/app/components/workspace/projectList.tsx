@@ -12,6 +12,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
   project,
   onCreateproject,
 }) => {
+  console.log(project)
   return (
     <div>
       <h1>Projects</h1>

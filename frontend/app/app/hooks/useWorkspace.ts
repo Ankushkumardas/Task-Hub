@@ -49,3 +49,10 @@ export const useGetArchivedProjectsQuery = (workspaceid: string) => {
     enabled: Boolean(workspaceid),
   });
 };
+
+export const useInviteMutation = (workspaceid: string) => {
+  return useMutation({
+    mutationFn: async (data: { email: string; role: "admin" | "member" | "viewer" |"owner"}) =>
+      postdata(`/workspaces/${workspaceid}/invite-members`, data),
+  });
+}

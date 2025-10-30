@@ -33,8 +33,17 @@ api.interceptors.response.use(
 );
 
 export const postdata = async (path: string, data: any) => {
-    const res = await api.post(path, data)
-    return res.data;
+    try {
+        const res = await api.post(path, data);
+        return res.data;
+    } catch (err: any) {
+        // Normalize axios error so callers can read a useful message/body
+        if (err.response && err.response.data) {
+            // Preserve server-provided body
+            throw err.response.data;
+        }
+        throw err;
+    }
 }
 
 export const fetchdata = async (path: string) => {

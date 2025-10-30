@@ -6,8 +6,8 @@ export const sendVerificationEmail = async (to, token, link) => {
       host: 'smtp.ethereal.email',
       port: 587,
       auth: {
-        user: 'scotty.hahn34@ethereal.email',
-        pass: 'zaj2KyUspZm1Emrp7S'
+        user: 'arlie86@ethereal.email',
+        pass: 'A6fP6MZtxr6RhcSsMP'
       }
     });
 
@@ -15,7 +15,7 @@ export const sendVerificationEmail = async (to, token, link) => {
       from: "Admin",
       to,
       subject: 'Verify your email',
-      html: `<p>Your verification token is: <b>${token}</b></p>
+      html: `<p>Your verification token for workspace or login is: <b>${token}</b></p>
              <p>Or click <a href='${link}'>here</a> to verify your email.</p>`
     };
     console.log(mailOptions);
