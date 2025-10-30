@@ -16,9 +16,9 @@ import { acceptInviteToken, acceptWorkspaceInvite, createWorkspace, getArchieved
  router.get("/:workspaceid/stats",authmiddleware,getWorkspaceStats)
 
  //settings route can be added later
- router.get("/accept-invite-token",authmiddleware,validateRequest({body:z.object({token:z.string()})}),acceptInviteToken);
+ router.post("/accept-invite-token",authmiddleware,validateRequest({body:z.object({token:z.string()})}),acceptInviteToken);
 
  router.post("/:workspaceid/invite-members",authmiddleware,validateRequest({params:z.object({workspaceid:z.string()}),body:z.object({email:z.string().email(),role:z.string()})}),inviteMembersToWorkspace);
 
- router.post("/:workspaceid/accept-invite",authmiddleware,validateRequest({params:z.object({workspaceid:z.string()})}),acceptWorkspaceInvite);
+ router.post("/:workspaceid/accept-generate-invite",authmiddleware,validateRequest({params:z.object({workspaceid:z.string()})}),acceptWorkspaceInvite);
  export default router;

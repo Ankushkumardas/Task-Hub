@@ -114,9 +114,9 @@ const Header = ({
             >
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel className="mt-1 text-blue-500">
-                <Link to={"/user/profile"}>Profile</Link>
-              </DropdownMenuLabel>
+              <DropdownMenuItem className="mt-1 text-blue-500">
+                <Link to={"/users/profile"}>Profile</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuLabel
                 onClick={logout}

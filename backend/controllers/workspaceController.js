@@ -411,7 +411,7 @@ export const acceptWorkspaceInvite=async(req, res) => {
     }
     workspace.members.push({
       user:req.user._id,
-      role:"member",
+      role: "member",
       joinedAt:new Date()
     });
     await workspace.save();
@@ -473,7 +473,8 @@ export const inviteMembersToWorkspace=async(req, res) => {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
 
-      const verificationLink = `${process.env.FRONTEND}/workspace-invite/${workspaceid}/token=${invitetoken}`;
+  // create a friendlier link: /workspace-invite/:workspaceid?token=...
+  const verificationLink = `${process.env.FRONTEND}/workspace-invite/${workspaceid}?token=${invitetoken}`;
       // send email (fire-and-forget)
       try {
         await sendVerificationEmail(u.email, invitetoken, verificationLink);

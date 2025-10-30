@@ -20,7 +20,7 @@ const TaskAssigneesSelector = ({
     assignees.map((a) => a._id)
   );
   const [dropdownopen, setdropdownopen] = React.useState(false);
-
+// console.log(projectmember)
   const handleselectAll = () => {
     const allisd = projectmember.map((pm) => pm.user._id);
     setselectedid(allisd);
