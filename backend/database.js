@@ -12,7 +12,6 @@ const db = async () => {
             );
         }
 
-        
         await mongoose.connect(uri);
 
         console.log("Database connected successfully");

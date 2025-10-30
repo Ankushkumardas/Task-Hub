@@ -1,6 +1,8 @@
 import axios from 'axios';
 import type { AxiosResponse, AxiosError } from 'axios';
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1"
+// Default to the backend port used by the local server (backend/.env PORT).
+// Change VITE_API_URL in the frontend .env if you run the backend on a different port.
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1"
 
 const api = axios.create({
     baseURL: BASE_URL,
