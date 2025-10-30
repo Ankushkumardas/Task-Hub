@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../libs/mailer.js";
 import Verfication from "../models/verification.js";
-import { use } from "react";
 
 export const verifyEmail = async (req, res) => {
   const { token } = req.body;
