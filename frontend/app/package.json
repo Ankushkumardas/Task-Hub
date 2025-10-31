@@ -3,11 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node ./node_modules/@react-router/dev/bin.js build",
-    "vercel-build": "vite build",
-    "dev": "node ./node_modules/@react-router/dev/bin.js dev",
-    "start": "node ./node_modules/@react-router/serve/bin.js ./build/server/index.js",
-    "typecheck": "node ./node_modules/@react-router/dev/bin.js typegen && tsc"
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

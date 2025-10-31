@@ -17,7 +17,8 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 //main routes
-app.use('/api/v1',router);
+// app.use('/api/v1',router);
+app.use('/api/v1', router);
 
 // friendly root status page (helps Render and health checks)
 app.get('/', (req, res) => {
