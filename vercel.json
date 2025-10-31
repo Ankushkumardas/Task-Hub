@@ -4,12 +4,12 @@
     {
       "src": "frontend/app/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "build/client" }
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/index.html" }
   ],
-  "outputDirectory": "frontend/app/build/client"
+  "outputDirectory": "frontend/app/dist"
 }
