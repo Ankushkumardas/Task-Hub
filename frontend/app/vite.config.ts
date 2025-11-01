@@ -18,7 +18,7 @@ export default defineConfig({
   },
 
   build: {
-    outDir: "dist", // fallback for safety
+    outDir: "build", // fallback for safety
     emptyOutDir: true,
   },
 
